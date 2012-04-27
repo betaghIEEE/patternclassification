@@ -1,0 +1,159 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{Brief Article}
+\author{The Author}
+%\date{}                                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+%\section{}
+%\subsection{}
+
+
+Illustration of Bayes rule
+
+Example: In a certain assembly plant, these machines $B_1, B_2$ and $B_3$ make 30\% , 45\%, and 25\% respectively, of the products.  From experience it is known that 2\%, 3\%, and 2\% of the products made by each machine, respectively, are defective.  If a finished product is randomly selected, then what is the probability that it is defective and what is the probability that it is made by machine $B_3$?
+
+\begin{eqnarray}
+P(A) = \sum_{i=1}^{3} P(B_i )P(A| B_i) \\
+= P(B_1)P(A|B_1) + P(B_2)P(A|B_2) + P(B_3)P(A|B_3)
+\end{eqnarray}
+
+Now in our case, 
+\begin{itemize}
+	\item A is the product defective
+	\item $B_1$ is the product made by machine $B_1$
+	\item $B_2$ is the product made by machine $B_2$
+	\item $B_3$ is the product made by machine $B_3$
+\end{itemize}
+
+
+\begin{eqnarray}
+	P(B_1)P(A|B_1) = (0.3)(0.02) = 0.006\\
+	P(B_2)P(A|B_2) =(0.45)(0.03) \\
+	P(B_3)P(A|B_3) =(0.55)(0.02) \\
+	P(A) = 0.0245 \\
+	P(B_3 | A) = \frac{P(B_3)P(A|B_3)}{P(A)} = \frac{0.005}{0.0245} =
+	P(B_1 | A) = \frac{0.006}{0.0245} =  
+	P(B_2 | A) = \frac{0.0135}{0.0245} = 
+\end{eqnarray}
+
+
+
+\begin{itemize}
+	\item Find the pdf at point $x_0 = (0.5, 0.1)^T$
+	\[
+	p(x_0 | \omega) = \frac{1}{(2\pi)^{3/2} |\Sigma| ^{1/2}  }exp [ \frac{1}{2} (\vec{x_0} - \vec{\mu} ) ^T \Sigma ^{-1} (\vec{x_0} - \vec{\mu} )]
+	\]
+	\item The squared Mahalenabis distance from the mean to $x_0 = (0.5, 0,1)^T$ is 
+	\[
+	r^2 = (\vec{x_0} - \vec{\mu} ) ^T \Sigma ^{-1} (\vec{x_0} - \vec{\mu} )
+	\]
+	\item Now 
+	\begin{eqnarray}
+		\left|
+		\begin{array}{lll}
+			1 & 0 & 0 \\
+			0 & 5 & 2 \\
+			0 & 2 & 5 
+		\end{array}
+		\right| \\
+		\Sigma^{-1} = 
+	\end{eqnarray}
+	\item 
+	\begin{eqnarray}
+		r^2	= 1.06 \\
+		p(x_0 | \omega) = \frac{1}{(2\pi)^{3/2}(21)^(1/2)} exp [-\frac{1}{2} (1.06)] = 8.16 \times 10^{-3} 
+	\end{eqnarray}
+	\item Construct the whitening transform and complete the matrices $\Phi$ and $\Lambda$.  Next, convert the distribution to one combined on the origin with the covariance matrix equal to identity matrix s.t. $p(\vec{x} | \omega) ~ N(0, I)$.  
+\end{itemize}
+
+refer to the book \cite[34]{}
+
+If an arbitrary multivariate normal distribution is transformed into a spherical distribution by some coordinate transformation, then such a transformation is known as the whitening transform.  
+
+If $\Phi$ is defined to be the matrix whose columns are orthonormal eigenvectors of the covariance matrix $\Sigma$, and $\Lambda$ is the diagonal matrix containing the eigenvalues in the diagonal.  The corresponding eigenvalues, then the transformation 
+\begin{equation}
+	A_{w} = \Phi \Lambda^{-\frac{1}{2}}
+\end{equation}
+applied to the coordinates yields a conversion of the covariance matrix to the identity matrix $A_w$ is called whitening transform since it makes the spectrum of the transformed eigenvalues of the transformed distribution uniform.  $A_w$ leads to circular symmetric Gaussian. 
+
+In 23b, 
+\[
+A_w = \Phi ^T \Lambda ^{-1/2}  \Phi
+\]
+where $\Phi$ contains the normalized eigenvectors of $\Sigma$ and $\Lambda$ is the diagonal matrix of eigenvalues.  The characteristic equation is 
+\begin{eqnarray}
+	| \Sigma - \lambda I | = 0 \\
+	= 
+		\left|
+		\begin{array}{lll}
+			1- \lambda & 0 & 0 \\
+			0 & 5 - \lambda & 2 \\
+			0 & 2 & 5 - \lambda 
+		\end{array}
+		\right| \Leftarrow \\
+		\Lambda = 
+		\left|
+		\begin{array}{lll}
+			1 & 0 & 0 \\
+			0 & 3 & 0 \\
+			0 & 0 & 7
+		\end{array}
+		\right|  
+\end{eqnarray}
+To find the eigenvectors, solve for $\Sigma \vec{x} = \lambda_i x $  where $i = 1,2,3$.  So
+\begin{eqnarray}
+\phi_1 = 	\left\{
+	\begin{array}{l}
+		1 \\
+		0 \\
+		0
+	\end{array}
+	\right\}	
+\phi_2 =  	\left\{
+	\begin{array}{l}
+		0 \\
+		\frac{1}{\sqrt{2}} \\
+		\frac{1}{\sqrt{2}}
+	\end{array}
+	\right\}	\\
+\phi_3 =  	\left\{
+	\begin{array}{l}
+		0 \\
+		\frac{1}{\sqrt{2}} \\
+		\frac{1}{\sqrt{2}} 
+	\end{array}
+	\right\} \\
+A_w = \Phi \Lambda^{-1/2} = \\
+\left\{
+\begin{array}{lll}
+	1 & 0 & 0  \\
+	0 & \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\
+	0 & \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} 
+\end{array}
+\right\} \\
+Y = A^T _w (x - \mu) ~N(0,I) 
+\end{eqnarray}
+
+
+Part 23c, there is a whitening transform, and the transformed point 
+\[
+x_w = A^T (x_0 - \mu) 
+\]
+
+must find $r^2$ in 23d (M distance) form $x_\omega$ to $0$, this can be found via $x_\omega ^T x_\omega$
+
+
+Practical data may be normal but the parameters are not well known.   (reference section 2.5) This will be coming soon in chapter 3.    
+
+
+\end{document}  

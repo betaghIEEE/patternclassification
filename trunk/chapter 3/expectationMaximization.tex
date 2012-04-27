@@ -1,0 +1,227 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+%\usepackage{doublespace}
+\usepackage{algorithm,algorithmic}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\DeclareMathOperator*{\argmax}{arg\,max}
+%\DeclareMathOperator*{\argmax}{argmax}
+
+\title{Notes on Expected Maximization}
+\author{Dan Beatty}
+%\date{}
+
+\begin{document}
+\maketitle
+
+Big deal: extending the application of maximum-likelihood techniques to permit the ``learning of parameters governing a distribution from training points.''
+\begin{itemize}
+	\item Uncorrupted cases could use $\hat{\vec{\theta}}$ acquired from MLE.
+	\item Iteratively converge on the likelihood for a given data set via Expectation Maximization or Baum-Welch
+	\item Features can be in terms of good features and bad features:  $D = \{ \vec{x_1} ,\ldots,\vec{x_n} \}$ or $D = D_g \cup D_b$.
+\end{itemize}
+
+Thus one function to contemplate comes to the front:
+\begin{equation}
+Q( \vec{\theta} ; \vec{\theta}^i) = E_{D_b} [ \ln p(D_g, D_b; \vec{\theta}) | D_g ; \vec{\theta}^i ] 
+\end{equation}
+% \cite[125]{duda-hart-stork}
+\begin{itemize}
+	\item $Q(\vec{\theta} ; \theta^i)$ is a function of $\vec{\theta}$ and $\vec{\theta}^i$
+	\item $E_{D_b} [ \ln p(D_g, D_b; \vec{\theta}) | D_g ; \vec{\theta}^i ] $ is the expected value is over the missing features.  The expected value hinges on $\vec{\theta}^i$ are the true parameters.
+	\item $\vec{\theta}^i$ is the current (best) estimate for the full distribution;  
+	\item $\vec{\theta}$ is a candidate vector for an improved estimate 
+	\item $D_b$ gets marginalized with respect to $\vec{\theta}^i$.
+	\item The goal of the EM algorithm is select from the candidate $\vec{\theta}$ from a set of $\vec{\theta}$s, and iterate it to $\vec{\theta}^{i+1}$ which yields the greatest $Q(\vec{\theta} ; \vec{\theta}^i)$
+	\item Samples are assumed iid.  
+\end{itemize}
+
+\begin{algorithm}
+\caption{Expectation Maximization}
+\label{alg:expectation-maximization}
+\begin{algorithmic}
+	\STATE initialize $\vec{\theta}^0$, $T$, and $i \leftarrow 0$
+	\REPEAT
+		\STATE $i \leftarrow i + 1$
+		\STATE \textbf{E Step:} compute $Q(\vec{\theta} ; \vec{\theta}^i)$ 
+		\STATE \textbf{M step:} $\theta ^{i+1} \rightarrow \arg \max _{\theta} Q(\vec{\theta} ; \vec{\theta} ^i)$ 
+	\UNTIL {$Q(\vec{\theta}^{i+1} ; \vec{\theta}^i) - Q(\vec{\theta}^{i} ; \vec{\theta}^{i-1}) \le T$}
+	\RETURN {$\hat{\vec{\theta}} \rightarrow \vec{\theta}^{i+1}$}
+\end{algorithmic}
+\end{algorithm}
+
+Claims about algorithm \ref{alg:expectation-maximization}:
+\begin{itemize}
+	\item Useful when the optimization of $Q(\cdot ; \cdot)$ is simpler than computing $l(\cdot)$
+	\item To marginalize bad data, and increase marginalization monotonically. 
+\end{itemize}
+
+
+\section{Information Theory Involved}
+Basic information theory was viewed earlier in the course.   Entropy in context of a discrete distribution is ``a measure of the randomness or unpredictability of a sequence of symbols drawn'' \cite[630]{duda-hart-stork} from such a distribution.  The units of entropy depend on the number system used, but otherwise is a unit-less value.  Entropy depends on the probabilities of the discrete items in the distribution, and not on the items themselves. 
+\newpage
+\begin{equation}
+H = - \sum _{i=1}^m P_i \log _2 P_i = E[ \log \frac{1}{P}]
+\end{equation}
+
+The relative entropy also known as Kullback-Leibler distance is a measure between two probabilities over the same variable.  
+\begin{eqnarray}
+	D_{KL}(p(x), q(x)) = \sum _{x} q(x) \ln \frac{q(x)}{p(x)} \\
+	D_{KL}(p(x), q(x)) = \int _{-\infty} ^{\infty} q(x) \ln \frac{q(x)}{p(x)} 
+\end{eqnarray}
+
+If there are two distributions, then there is a possibility of the distributions have information in common.  A few exceptions arise due to the mutual information.  Mutual information is the reduction of uncertainty about one variable due to information about another. 
+\begin{eqnarray}
+	I(p ; q) = H(p) - H(p | q) = \sum_{x,y} r(x,y) \log _2 \frac{r(x,y)} {p(x)q(y)}
+\end{eqnarray}
+where 
+\begin{itemize}
+	\item $r(x,y)$ is the joint distribution of finding $x,y$.
+	\item $p(x)$ and $q(y)$ are the probabilities of $x$ and $y$ in their respective distributions. 
+	\item Exceptions to metric rules includes that
+		\begin{equation}
+		p(x) = q(y) \to I(x; y) =0		
+		\end{equation}
+		 is not guaranteed.	
+\end{itemize}
+
+note moon book
+
+
+A.P.  Book 
+
+\section{MLE and EM}
+Expectation and maximization:  An EM algorithm finds maximum likelihood (ML) estimates of parameters in probabilistic variables that are not directly observed but inferred from observed and directly measured variables (latent variables).  EM alternates between an expectant step (that computes the expectation of the likelihood by including latent variables) and a maximization step (M-step that maximizes the expected likelihood found on the $E$ step).  The process is repeated by performing another $E$ step using the parameters found on the M-step.  EM is frequently used in data clustering in ``Computer Vision'' and ``Machine Learning''.  
+
+\subsection{Specification of the EM procedure}
+Let $Y\to$ incomplete consisting of values of observable variables.  $X \to $ the missing data $X$ and $Y$ together form the incomplete data.
+
+\subsection{Step 1: Estimate unobservable data}
+Let $p\to$ the joint probability distribution of the complete data with parameters given by the vector $\theta \to p(y, x| \theta) \to$  likelihood of the complete data.  Then the conditional distribution of the missing data is given by 
+\begin{equation}
+p(x | y, \theta) = \frac{p(y| x, \theta)}{p(y | \theta)} = \frac{p(y| x, \theta) p(x | \theta)}{\int p(y| \hat{x}, \theta) p( \hat{x}| \theta) d\hat{x} }
+\end{equation}
+using Bayes rule and total probability.  The above formulation only the needs the knowledge of $p(y | x , \theta)$, the likelihood of the observation given the unobservable data, and the probability of the unobservable data, $p(x | \theta)$.  
+
+\subsection{Step 2: Maximize log-likelihood of the complete data set}
+In this step, the EM algorithm improves on an initial estimate $\theta_0$ by new estimates $\theta_1 , ..., \theta_n$, iteratively.  An individual re-estimation step has the following form: 
+\begin{equation}
+	\theta_{n+1} \arg \max_{\theta} E_x [ \log p(y, x | \theta) | y] 
+\end{equation}
+where $E_x[\cdot]$ denotes the conditional expectation of $\log p(y,x | \theta)$ with $\theta$ in the conditional distribution of $x$ fixed at $\theta_n$.  
+$\therefore \theta_{n+1}$ is the value that maximizes (M) the expectation ($E$) of the complete data likelihood given the observed variables.  
+\begin{equation}
+p(x | \theta) = p(x,y | \theta) = p(y | x , \theta) p(x | \theta) 
+\end{equation}
+which is the joint density function.  Now we define a new likelihood function 
+\begin{equation}
+L ( \theta | Z) = L(\theta | X,Y)  = p(X,Y, \theta)
+\end{equation}
+This leads to the complete data likelihood.  The EM algorithm finds the expected value of the complete data log-likelihood i.e., $\log p(x, y | \theta)$ with, respect to the unknown data $Y$ given the observed data $X$ and the current estimates of the parameters.  $\therefore$ we define $Q(\theta, \theta^{i-1})$, where $\theta^{i-1}$,  where $\theta^{i-1}$ are the current parameter estimates used to evaluate the expectation and $\theta$ are the parameters that are optimized to increase $Q$.  
+\begin{equation}
+\therefore Q \{ \theta , \theta^ {i-1}\} = E [ \log p(x,y| \theta) | X , \theta^{i-1}]
+\end{equation}
+Here $x, \theta^{i-1}$ are constants, $\theta$ is a variable to be adjusted, and $Y$ is a random variable ruled by a distribution $f(y| x , \theta^{i-1})$:
+\begin{eqnarray}
+\therefore Q\{ \theta , \theta ^{i-1}\} = \infty \\
+E[\log p(x,y| \theta) | X , \theta ^{i-1}] = \infty
+\end{eqnarray}
+In the M step of the EM algorithm 
+\begin{equation}
+\theta^{(i)} = \arg\max_{\theta} Q(\theta , \theta^{i-1})
+\end{equation}
+is found by maximizing the expectation computing in the E step.  
+
+
+
+\section{Lessons from Moon}
+
+E Step
+Compute $Q( \vec{\theta} | \vec{\theta} ^{(k)})$
+\begin{equation}
+Q(\vec{\theta} | \vec{\theta}^{(k)}) = E [ \log f(\vec{x} | \vec{y} , \vec{\theta}^k )]
+\end{equation}
+
+
+Condition the likelihood of the complete data.
+
+\begin{itemize}
+\item Fixed
+\item Conditions the expectation function
+\end{itemize}
+
+M Step:  Let $\vec{\theta}^{(k+1)}$ be that value of $\vec{\theta}$ which versions $Q( \vec{\theta} | \vec{\theta} ^k)$.
+\[
+\vec{\theta} ^{(k+1)} = \arg \max _{\theta} Q(\vec{\theta} | \vec{\theta}^k)
+\]
+
+Maximization is about the conditioner of the complete data.
+
+
+Exponential Family
+
+\textbf{Definition} A family of distributions with probabilities mass function of density $f_x ( \vec{x} | \vec{\theta})$ is said to be a $k$ parameter exponential family if $f_x (x | \theta )$ has the form 
+\begin{eqnarray*}
+f_x (x | \theta ) = c ( \theta) a (x) \exp [ \sum_{i=1}^k \pi _i (\theta) t_i (x)] \\
+c (\theta ) = \frac{1}{\sum_x a(x) \exp [\sum_{i=1}^k \pi _i (\theta) t_i (x)   ]} 
+\end{eqnarray*}
+
+
+Applied to EM:
+\begin{itemize}
+\item A vector of sufficient statistics
+\[\vec{t}(\vec{x}) = [t_1(\vec{x}), ...,t_q \vec{x} ] ^T \]
+\item $\vec{\theta}$ is a vector of parameters for the family.
+\end{itemize}
+
+E-Step Rewritten:
+\begin{eqnarray}
+Q(\vec{\theta} | \vec{\theta}^k)  = E[ \log a(x) | \vec{y} , \vec{\theta}^k] + \pi (\vec{\theta})^T E[ \vec{t}(\vec{x}) | \vec{y}, \vec{\theta}^k] + log c(\vec{\theta}) \\
+\vec{t}^{[k+1]} = E [ \log a(\vec{x}) | \vec{y} , \vec{\theta}^{[k]} ]
+\end{eqnarray}
+
+M-Step Rewritten:
+\begin{equation}
+E [ \log (a (\vec{x})) | \vec{y} , \vec{\theta}^{[k]}] + \pi (\vec{\theta}) \vec{t}^{[k+1]} + \log c(\vec{\theta})
+\end{equation}
+
+
+
+Gaussian application to derivation
+\begin{eqnarray}
+p(\vec{y}) = \sum _{i=1} ^M \alpha_i p_i (\vec{y}_j | \vec{\mu}_i, \mathbf{\Sigma}_i) \\
+\vec{\theta} = \{\alpha_1, ..., \alpha_M, \vec{\mu}_1, ..., \vec{\mu}_M, \mathbf{\Sigma}_1, .., \mathbf{\Sigma} \} 
+\end{eqnarray}
+
+E - Step 
+\begin{equation}
+	a_{ij}^p = \frac {\alpha_j ^p p(\vec{y}_i ^{(p)} | \vec{\mu}_j ^{(p)} \mathbf{\Sigma}_j ^{(p)}) }{ \sum_{j=1}^M \alpha_j ^p p ( \vec{y}_i ^{(p)} | \vec{\mu}_j ^{(p)} \mathbf{\Sigma}_j ^{(p)} )  }
+\end{equation}
+
+M-Step
+\begin{eqnarray}
+\vec{\mu}_j ^{(p+1)}  =   \frac{ \sum_{i=1}^N a_{ij}^p \vec{y}_i }{\sum _{i=1}^N a_{ij}^{(p)} } \\
+\mathbf{\Sigma}_j ^{(p+1)}  = \frac{\sum _{i=1}^N a_{ij} ( \vec{y}i - \vec{\mu}_j)( \vec{y}i - \vec{\mu}_j)^T}{\sum_{i=1}^N a_{ij} ^{(p)}} \\
+\alpha_j ^{(p+1)} = | a_j |
+\end{eqnarray}
+
+
+\begin{itemize}
+	\item $\vec{a}_j$ is a column vector from matrix $\mathbf{A}$
+	\item $\vec{y}_j$ is a sample vector 
+	\item $N$ is the number of samples
+	\item $M$ is the number of attributes known and unknown.
+\end{itemize}
+
+
+
+\bibliography{../patternNotes.bib}
+\bibliographystyle{abbrv}
+
+\end{document}

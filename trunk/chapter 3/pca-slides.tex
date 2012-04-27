@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{Notes on PCA in Pattern Classification}
+\author{Dan Beatty quoting Dr. Mitra}
+\date{2-19-2007}                                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+\section{Component Analysis and Discriminants}
+\begin{itemize}
+	\item Combine features in order to reduce the dimension of the feature space
+	\item Linear combinations are simple to compute and tractable 
+	\item Project high dimensional onto a lower dimensional space
+	\item Two classical approaches for finding ``optimal'' linear transformation
+	\begin{itemize}
+		\item Principal Component Analysis ``Projection that best \textbf{represents} the data in a least-square sense.'' 
+		\item Multiple Discriminant Analysis ``Projection that bests \textbf{separates} the data in a least squares sense''
+	\end{itemize}
+	
+\end{itemize}
+
+\section{Hidden Markov Models}
+
+\begin{itemize}
+	\item Markov Chains
+	\item Goal: make a sequence of decisions
+	\begin{itemize}
+		\item Processes that unfold in time, states at time $t$ are influence by a state at $t-1$
+		\item Applications: speech recognition, gesture recognition, parts of speech tagging and DNA sequencing, 
+		\item Any temporal process without memory $\omega ^T \{ \omega(1),\omega(2), ..., \omega(T) \}$ sequence of states.  We might have $\omega^6 = \{ \omega 1, \omega 4, \omega 2, \omega 2, \omega 1, \omega 4  \}$.
+		\item The system can revisit a state at different steps and not every state need to be visited 
+	\end{itemize}
+	\item First Order Markov models
+	\begin{itemize}
+		\item Our productions of any sequence is described by the transition probabilities. 
+		\begin{eqnarray}
+			P( \omega_j (t+1) | \omega_i (t)) = a_{ij} \\
+			\theta = ( a_ {ij} , \omega^T) \\
+			P(\omega^T | \theta) = a_{14} a_{42} a_{22} a_{21} a_{14} P(\omega(1) = \omega_i)
+		\end{eqnarray}
+		% cite figure 3-8
+		\item Examples include speech recognition
+		``production of spoken words''  Production of the word: ``pattern'' represented by phonemes.
+		Transitions from p to a, a to tt, tt to er, and er to n to silent state.  
+	\end{itemize}
+	
+\end{itemize}
+
+
+\end{document}

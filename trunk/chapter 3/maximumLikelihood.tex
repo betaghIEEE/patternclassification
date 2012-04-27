@@ -1,0 +1,234 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{MLE Notes}
+\author{Dan Beatty}
+%\date{}                                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+%\section{}
+%\subsection{}
+
+
+Introduction
+\begin{itemize}
+	\item Maximum-Likelihood Estimation
+	\item Example of a Specific Case
+	\item The Gaussian Case unknown $\mu$ and $\sigma$ Bias
+	\item  Appendix ML Problem Statement
+\end{itemize}
+\cite{duda-hart-stork}
+
+\begin{itemize}
+	\item Data availability in a Bayesian framework
+	\begin{itemize}
+		\item Optimal classifiers require knowledge on priors $P(\omega_i)$ and class-conditional densities $P(x|\omega_i)$:
+		\item Neither of which are completely available at the time of classification.
+	\end{itemize}
+	
+	\item Design a classifier from a training sample
+	\begin{itemize}
+		\item No problem with prior estimation
+		\item These prior probabilities are used to calculated estimated class conditional densities $P(x|\omega_i)$.  This follows from the definition of mathematical expectation which requires an infinite set of samples.  Training samples are supposed to be small enough to not over condition the classifier, but the expected values are only rough mean, and rely on representation assumptions which may not be true.
+		\item Samples are often too small for class-conditional estimation (large dimension of feature space!)
+	\end{itemize}
+	\item A priori information about the problem 
+	\item Normality of $P(\vec{x}| \omega_i)$, $P (\vec{x} | \omega_i) ~ N(\mu_i, \Sigma_i)$ \\
+	Characterized by 2 parameters
+	\item Estimation techniques:
+	\begin{quote}
+		\begin{itemize}
+			\item Maximum Likelihood (ML) and the Bayesian estimations
+			\item Results are nearly identical, but the approaches are different.
+		\end{itemize} \cite{slides}	
+	\end{quote}
+	\item ``Parameters in ML estimation are fixed but unknown!''
+	\item `Best estimate parameters' are obtained by maximizing the probability obtaining the samples observed.
+	\item Bayesian methods view parameters as random variables as random variables having some known distribution.  The technique leads to \textsl{Bayesian Learning}.
+	\item In either approach, we use $P(\omega_i | \vec{x})$ for our classification rule!
+\end{itemize}
+
+
+\section{Maximum-Likelihood Estimation}
+\begin{itemize}
+		\item A good maximum likelihood estimator has good convergence properties as the sample size increases.
+		\item Simpler than any many other alternative techniques
+		\item Assume classes $c$
+ 		\item Data sets $\mathcal{D}_1 , ..., \mathcal{D}_n$ is drawn from independent and identically distributed random variables obeying $P(x | \omega_j)$.
+		\begin{eqnarray}
+		P(x | \omega_j) ~ N (\mu_j, \Sigma_j) \\
+		P(x | \omega_j) \equiv P( x | \omega_j , \theta_j) \\
+		\vec{\theta} ~ N(\mu _j , \Sigma_j ) = ( \mu_j ^1, \mu_j ^2 ... \sigma^{11}, \sigma^{22}, cov (\vec{x_j}^m , \vec{x_j}^n))
+		\end{eqnarray}
+		\item Use the information provided by the training samples to estimate $\theta$ s.t.
+		\[
+		\theta = ( \theta_1, \theta_2, ..., \theta_c) 
+		\] 
+		and each $\theta_i$ for $i = 1,2,...,c $ is associated with each category
+		\item Suppose that $\mathcal{D}$ contains $n$ samples, $x_1, x_2, ..., x_n$
+		\[
+		P(\mathbf{D} | \vec{\theta}) = \prod _{k=1} ^{k=n} P(\vec{x}_k | \vec{\theta} ) % = F(\theta)
+		\]
+		$P(\mathbf{D} | \vec{\theta})$ is called the likelihood of $\vec{\theta}$ w.r.t the set of samples. 
+		\item ML estimate of $\theta$ is by definition the value that maximizes $P(\mathbf{D} | \vec{\theta})$, and that value is denoted $\hat{\vec{\theta}}$.  
+		\item Optimal estimation for a number of parameters of $p$
+		\begin{itemize}
+			\item Let $\vec{\theta} = ( \theta_1 , \theta_2, ..., \theta_p) ^T$ and let $\nabla _{\theta}$ be the gradient operator
+			\begin{equation}
+			\nabla _{\vec{\theta}} \equiv 
+			\left[
+			\begin{array}{c}
+			\frac{\partial}{\partial \theta_1} \\
+			\frac{\partial}{\partial \theta_2} \\
+			. \\ . \\ . \\
+			\frac{\partial}{\partial \theta_p} \\
+			\end{array}
+			\right]
+			\end{equation}
+			
+			\item We define $l(\theta)$ as the log-likelihood function 
+			\[
+			l(\theta) = \ln P(D | \theta)
+			\]
+			\item New problem statement: determine $\theta$ that maximizes the log-likelihood 
+			\[
+			\hat{\theta} = \arg \max _{\theta} l(\theta)
+			\]
+			Set of necessary conditions for an optimum is defined on the likelihood from data set $\mathcal{D}$.  The equation is specified in equation \ref{maximum-likelihood-probability-gradient}, and the maximization of the estimate gradient occurs as stated in equation \ref{maximum-likelihood-probability-gradient-local-maximum}.
+			\begin{eqnarray}
+				\nabla _{\theta} I = \sum _{k=1}^{k=n} \nabla_ {\theta} \ln P(\vec{x_k} | \theta ) \label{maximum-likelihood-probability-gradient} \\
+				\nabla _{\theta} I \Rightarrow 0 \label{maximum-likelihood-probability-gradient-local-maximum}
+			\end{eqnarray}
+			So far this has been a derivation of probability with vector calculus.  As with all converging results, the result is still simply an estimate on the limit.  A related class of estimators is called maximum a posteriori (MAP).  MAP estimators have a drawback in when prior probabilities change due to a non-linear transformation of the parameter space.  
+		\end{itemize}		
+\end{itemize}
+
+In both the case of unknown mean and unknown covariance, the mathematical expectation function comes into play to define the sample mean and sample covariance.  This is not surprising since that is how these values are defined in the first place. 
+
+\subsection{Specific Case Example: Unknown mean $\vec{\mu}$}
+\begin{itemize}
+	\item $P(x_i | \mu) ~ N (\mu, \Sigma)$ (Samples are drawn from a multivariate normal population)
+	% Formulae on slide 11
+	\begin{eqnarray}
+		\ln p(\vec{x}_k | \vec{\mu}) = - \frac{1}{2}( \ln [(2\pi)^d |\Sigma |] + (\vec{x}_k - \vec{\mu})^T \Sigma^{-1} (\vec{x}_k - \vec{\mu})) \\
+		\nabla _u \ln p(\vec(x) | \vec{\mu}) = \Sigma ^{-1} (\vec{x}_k - \vec{\mu} )  
+	\end{eqnarray}
+	
+	\item $\theta = \mu$ therefore: the ML estimate for $\mu$ must satisfy: 
+	\item Derivations via multiplication by $\sigma$ and rearranging, we obtain
+	\begin{eqnarray}
+	\sum _{k=1}^n \Sigma^{-1} (\vec{x}_k - \hat{\vec{\mu}}) = 0 \\
+	\hat{\vec{\mu}} = \frac{1}{n} \sum _{k=1}^n x_k 
+	\end{eqnarray}
+	
+	Just the arithmetic average of the samples of the training samples!  This is not surprising as the definition of expected values is based on approximation of the mean, aka the sample mean.
+	\item Conclusion: If $P(x_k | \omega_j)$ such that $j=1,2,...,c$ is supposed to be Gaussian in $d$-dimensional feature space; then we can estimate the vector $\theta = (\theta_1, \theta_2, ..., \theta_c)^T$ and perform optimal classification!
+\end{itemize}
+
+\subsection{Specific Case Example: Unknown mean and covariance ($\mu, \Sigma$)}
+Univariate case for unknown $\mu, \Sigma$ yields
+\begin{eqnarray}
+	\ln p(x_k | \vec{\theta}) = -\frac{1}{2} \ln 2\pi \theta_2 - \frac{1}{2\theta_2}(x_k - \omega_1)^2 \\
+	\nabla _{\theta} l = \nabla _{\theta} \ln p(x_k | \vec{\theta}) =
+	\left[
+	\begin{array}{c}
+		\frac{1}{\theta_2}(x_k - \theta_1) \\
+		-\frac{1}{2\theta_2} + \frac{(x_k - \theta_1)^2}{2 \theta_2 ^2}
+	\end{array}
+	\right]  \label{gradient-gaussian-unknown-parameters} \\
+	\sum_{k=1}^{n} \frac{1}{\hat{\theta}_2} (x_k - \hat{\theta} _1) = 0 \label{gradient-gaussian-unknown-parameters-maximum-cond1} \\
+	- \sum _{k=1}^{n} \frac{1}{\hat{\theta}_2} + \sum_{k=1} ^n \frac{(x_k - \hat{\theta}_1 )^2}{\hat{\theta}_2 ^2} =0
+	\label{gradient-gaussian-unknown-parameters-maximum-cond2}
+\end{eqnarray}
+To satisfy these conditions, $\theta_1, \theta_2$ must yield the following for $\hat{\mu}$ and $\hat{\sigma^2}$ which are the sample mean and variance. 
+\begin{eqnarray}
+	\hat{\mu} = \frac{1}{n} \sum _{k=1}^n x_k \\
+	\hat{\sigma}^2 = \frac{1}{n} \sum _{k=1}^n (x_k - \hat{\mu})^2
+\end{eqnarray}
+Likewise in the multi-variate case.  Sample variance is always slightly different than the true variance for the distribution from which a sample is from.  
+
+
+The MLE of the variance $\sigma^2$ is biased 
+\begin{equation}
+E [\frac{1}{n} \sum_{n=1}^n ( x_i - \bar{x})^2] = \frac{n-1}{n}\sigma^2 \neq \sigma^2
+\end{equation}
+Considering the univariate case, let $\mu$ and $\sigma^2$ be the mean and variance of the Gaussian 
+\begin{eqnarray}
+\sigma^2 _n = E [\frac{1}{n-1} \sum _{i=1}^n (x_i - \mu)^2] \\
+ = \frac{1}{n-1} E [ \sum_{i=1}^n \{(x_i - \mu) - (\hat{\mu} - \mu)  \}^2] \\
+\frac{1}{n-1} E [ \sum_{i=1}^n \{(x_i - \mu) -2 (x_i - \mu) (\hat{\mu} - \mu) + (\bar{\mu} - \mu)^2  \}]  \\
+ \frac{1}{n-1}[ \sum_{i=1}^n \{E(x_i - \mu) -2 E(x_i - \mu) (\hat{\mu} - \mu) + E(\bar{\mu} - \mu)^2  \}] \\
+ \frac{1}{n-1}[ \sum_{i=1}^n \{E(x_i - \mu) -2 E(x_i - \mu) (\hat{\mu} - \mu) + E(\bar{\mu} - \mu)^2  \}] \\
+\\
+E [(x_i - \mu)(\hat{\mu} - \mu)]  \\
+= E [(x_i - \mu)(\frac{1}{n} \sum _{j=1}^n x_k - \mu )] \\
+= E [ (x_i - \mu) (\frac{x_i - \mu}{n} + \frac{1}{n} \sum _{k=1, k \neq i} {n} x_k - \mu)] \\
+= E [\frac{1}{n}(x_i - \mu)^2 ] + E [\frac{1}{n} (x_i - \mu)( \sum_{k=1, k\neq i} x_k - (n-1)\mu ) ]  \\
+= \frac{1}{n}\sigma^2 + 0  =\frac{\sigma^2}{n}  \\
+\\
+E [ (x_i - \mu )(\hat{\mu} - \mu )] \\
+= E[ (x_i - \mu) ( \frac{1}{n} \sum _{j=1}^n (x_j - \mu)  )] \\
+E [ (x_i - \mu) ( \frac{x_i - \mu}{n} + \frac{1}{n} \sum _{k=1, k\neq i}^n x_k - \mu  ) ] \\
+E [ \frac{ (x_i - \mu)^2 }{n}  ] + E [ \frac{ x_i - \mu }{n} \sum_{k=1, k\neq i} ^n (x_k - (n-1)\mu )] \\
+= \frac{\sigma^2}{n} + 0 = \frac{\sigma^2}{n}
+E [ \hat{\mu} - \mu ] = \frac{\sigma^2}{n}
+\sigma_n ^2 = \frac{1}{n+1} [ \sigma^2 - \frac{2}{n} \sigma^2 + \frac{\sigma^2} {n}  ] \\
+\frac{n-1}{n-1} \sigma^2 = \sigma^2 \to \textrm{ unbiased}
+\end{eqnarray}
+
+Similarly 
+\begin{eqnarray}
+	E (\hat{\mu} - \mu)  = \frac{\sigma^2} {n} \\
+	\sigma_n ^2= \frac{1}{n-1} [\sigma^2 - \frac{2}{n}\sigma^2 + \frac{\sigma^2}{n}] \\
+\textrm{unbiased }	\frac{n-1}{n-1} \sigma^2 = \sigma^2   \\
+P(x_1, ..., x_n | \theta)  = \prod _{k=1}^n \prod _{i=1}^d \theta_2 ^{2k_i} ( 1- \theta_i)^{1-x_{k_i}} \\
+l(0 ) == \sum_{k=1}^n \sum _{i=1}^d x_{ki} \ln \theta_i + ( 1 - x_{ki}) \ln(1 -\theta_i) 
+\end{eqnarray}
+
+We know that $p(x| \omega_1) ~ N(\mu, 1)$ and we assume that $p(x| \omega_2) ~N(\mu, 1)$.  Imagine, however, that the true underlying distribution is $p(x | \omega_2) ~ N(1, 10^5)$.  
+
+
+The MLE derivation is different.  The unbiased estimator for $\Sigma$ is given by equation 3-21 (page 90).  Where $C$ is the sample covariance matrix and $\hat{\Sigma}$ which equals:
+\[
+\hat{\Sigma} = \frac{n-1}{n}C 
+\]
+Consider the problem of learning the mean of a univariate normal distribution from equations 34 and 35 we have
+\begin{eqnarray}
+	\mu _n = \frac{n \sigma_0 ^2} {n \sigma_0 ^2 + \sigma^2} m_n + \frac{\sigma^2}{n \sigma_0 ^2 + \sigma^2} \mu_0\\
+	\sigma_n ^2 = \frac{ \sigma_0 ^2 \sigma^2 }{ n \sigma_0 ^2 + \sigma^2}
+\end{eqnarray}
+where $m_n = t_n $
+
+$\mu_0$ is formed by averaging $n_0$ fictitious samples $x_k$ from $k= -n_0 + 1 , -n_0 +2 , ..., 0$
+\begin{eqnarray}
+\mu _0 = \frac{1}{n_0} \sum _{k =-n_0 + 1}^{0} x_k \\
+\mu_n = \frac{ \sum_{k=1}^{n} x_k }{ n + \frac{\sigma^2}{\sigma_0 ^2}} + \frac{ \frac{\sigma^2}{\sigma_0^2}}{\frac{\sigma^2}{\sigma_0 ^2} +n} \frac{1}{n_0} \sum _{k=-n_0} ^0 x_k \\
+\mu _n =\frac { \sum_{k=1}^{n} x_k }{n+n_0} + \frac{n_0}{n+n_0} (\frac{1}{n_0})\sum_{k=-n_0} ^0 x_k \\
+n_0 = \frac{\sigma^2} {\sigma_0 ^2} \\
+\mu _n = \frac{1}{n+ n_0} [ \sum_{k=1}^n x_k + \sum _{k=n_0} ^0 x_k] \\
+=  (\frac{1}{n+ n_0}) \sum_{k= -n_0} ^ n x_k \\
+\therefore \sigma_n^2 = {\sigma^2 \sigma_0^2}{n \sigma_0 ^2 + \sigma^2} = \frac{\sigma^2} {n + \frac{\sigma^2}{\sigma_0^2}} \\
+= \frac{\sigma^2} {n+ n_0} \neq \sigma^2 
+\end{eqnarray}
+
+Asymptotically unbiased  (page 90)
+
+
+PCA issue from hand out document
+
+
+\bibliography{../patternNotes.bib}
+\bibliographystyle{abbrv}
+
+
+
+\end{document}  
+

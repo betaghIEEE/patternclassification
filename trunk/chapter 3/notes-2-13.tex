@@ -1,0 +1,87 @@
+ICA / PCA 
+
+PCA de-correlates the data  (sum the $\lambda_i$)  , but ICA goes slightly beyond.  Principle of ICA minimizes the mutual information.  
+
+ICA can work for blind source separation.  
+
+revisit the principle component analysis (PCA) 
+
+Let $x$ be a population of random vector of $n$ elements, then the mean vector (notation from Gonzolez) $m_x$ is defined as $m_x = E \{ x \}$ ,  The covariance matrix of the vector population is defined as $C_x = E \{ (x-m_x)(x- m_x)\}$.   
+
+$C_x$ is a matrix of order $n \times n$ that is real and symmetric.   One property of real symmetric matrices is that their eigenvectors and eigenvalues can always be found for such a $C_x$.   Let $e_i$ be the eigenvectors and corresponding eigenvalues denoted as $\lambda_i$ for matrix $C_i$.   When performing PCA, it is a good idea to arrange the eigenvectors and eigenvalues in an ordered fashion from descending values.  
+\[ 
+\lambda_i < \lambda_j
+\] 
+
+Let $A$ be a matrix formed such that its rows are eigenvectors of $C_x$ in descending order, then $A$ is a transformation matrix that maps $x$ into $y$'s according to 
+\begin{eqnarray}
+	y = A ( x - m_x) \\
+	C_y = A C_x A^T \\
+\end{eqnarray}
+
+such that 
+\begin{itemize}
+	\item $m_y = 0$
+	\item $C_y$ is a diagonal matrix containing the eigenvalues.  The elements of the $y$ vector are uncorrelated.
+\end{itemize}
+For image processing, this transformation effectively is a rotation transformation that aligns the data with the eigenvectors.   
+
+There is a reorientation of the orientation of the data such that the there is a translation and rotation of data to a common origin.  
+
+Since the rows of $A$ are orthonormal vector, i.e. $\bar{A}^{-1} = A^T$ (by theorem), any vector $x$ can be recovered from the transformed vector $y$  by 
+\begin{eqnarray}
+	x = A^T y  + m_x
+\end{eqnarray}
+From $y= A(x - m_x)$.
+
+For approximate reconstruction, 
+\begin{eqnarray}
+	\hat{x} = A^T _k y + m_x
+\end{eqnarray}
+whose only $k$ largest eigenvalues are used $e_{ms}$ 
+\begin{eqnarray}
+	e_{ms} = || x - \hat{x} || ^2 \sum_{k=1}^n \lambda_y
+\end{eqnarray}
+ PCA involves involves only the second order moments to un-correlate the data. ICA (Independent Component Analysis) involves a linear transformation to express a set of random variables as linear combinations of statistically independent source variables.  ICA considers minimization of mutual information as a function of higher order statistics and presents a better data representation then PCA.  Mutual information between two random variables $X$ and $Y$ is defined as 
+\begin{eqnarray}
+	I(X,Y)  = H(X) - H(Y|x) \\
+	= H(X - H(X|Y))
+\end{eqnarray}
+where $X$ and $Y$ are jointly distributed discrete random variables.  
+$H(x)$ is entropy of $x$ 
+\begin{eqnarray}
+	- \sum _i p_i (x) \ln p_i (x) 
+\end{eqnarray}
+$H(Y| X)$ the conditional entropy 
+\begin{eqnarray}
+	- \sum p_{xy} ln p_{yx} (y| x)
+\end{eqnarray}
+
+Why is PCA done?  Alignment, reduce the dimension, normalization, and whitening.  
+
+Problem 8 \cite[142]{duda-hart-stork}.  Extreme case of MLE solution leading to the worst possible classification with an error approaching 100\% in probability.  
+
+%Note on dissertation JPEG 2000 algorithm encoding v/s BCWT.  (Epcot is the key to the comparison)
+
+The data comes from two one-dimensional distributions of the form 
+%p(x| \omega_1) ~[(1-k) \delta (x-1) + k \delta(x + X)]
+%p(x | \omega-)
+where $X$ is positive, $ 0 \le k \le 0.5$ represents the portion of the total probability mass concentrated at the point $+- X $ and $\delta(\cdot)$ the Dirac delta function.   Our poor model are of the form $p(x | \omega_1 \mu _1) ~ N( \mu , \sigma_1 ^2)$ and $p(x|\omega_2) ~ N(\mu_2 | \sigma_2 ^2)$.   
+\begin{itemize}
+	Show that in the infinite finite data case, the decision boundary will always be at $x=0$, regardless of $k$ and $x$.  
+	
+	Symmetry operation $x\to -x$ then $P(x|\omega_1)\leftrightarrow p(x | \omega_2)$.    Therefore $x=0$ is a decision boundary since the distributions will have the same value at $x=0$.   
+	
+	There is something else to consider.  Since the Gaussian estimates must have the same variance, there will be a single intersection at $x=0$.  
+\end{itemize}
+
+graph:  
+
+$\vec{\mu}$ MLE Estimates mean of it s distribution can switch for a fixed $k$ at a certain of $x$.  
+\begin{eqnarray}
+	x > \frac{1-k}{k}
+\end{eqnarray}
+Try it and test it out.  
+
+Be aware of the assumption made in the model of the dataset.  
+

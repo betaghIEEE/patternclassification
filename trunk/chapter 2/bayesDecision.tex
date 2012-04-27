@@ -1,0 +1,31 @@
+
+
+\begin{itemize}
+	\item Feature Space:  $\mathbf{R}^d$
+	\item Feature Vector $\vec{x}$
+	\item Loss Vector 
+	\item Actions - a finite set of actions, $\alpha_1, ..., \alpha_n$
+	\item States
+	\item Loss function - exactly how costly is each action, $\lambda{\alpha_i | \omega_j}$
+	\item Prior Probability - for category denoted $P(\omega_j)$
+	\item Posterior Probability 
+	\[
+	p(\omega_j | \vec{x}) \equiv \frac{p( \vec{x} | \omega_j) P(\omega_j)}{p(\vec{x})}
+	\]
+	\item Evidence:  
+	\[ 
+	p(\vec{x}) \equiv \Sum_{j=1} ^c p ( \vec{x} | \omega_j) P (\omega_j)
+	\]
+	\item Conditional Risk 
+	\[
+		R ( \alpha_i | \vec{x}) \equiv \Sum _{j=1} ^c \lambda(\alpha _ i | \vec{x} ) P(\omega_j | \vec{x})
+	\]
+	\item Overall Risk: 
+	\[
+		R \equiv \int R (\alpha (\vec{x}) | \vec{x}) p( \vec{x}) d\vec{x}
+	\]
+	\item Decision Rule: A general decision rule is a function $\alpha (\vec{x})$ that tells which action to take for every observation.  Note that this may be better handled by other inference engines.  
+\end{itemize}
+
+
+

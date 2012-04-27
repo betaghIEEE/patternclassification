@@ -1,0 +1,114 @@
+There are two desparately needed frameworks to the DCG repertoire namely  
+\begin{itemize}
+	\item Parameter Estimation consisting of 
+	\begin{itemize}
+		\item Maximum Likelihood Estimation
+		\item Expected Maximization (EM)
+		\item Hidden Markov Models (HMM)
+	\end{itemize}
+	
+	\item Preconditioning
+	\begin{itemize}
+		\item SVD / Principle Components
+		\item Fisher's Linear/Multiple Discriminant Analysis
+	\end{itemize}
+	
+\end{itemize}
+
+The parameter estimation framework can have several derived frameworks, one for each type of statistic.  For example, the proposed Bayes-Gaussian should have at least the following object classes:
+\begin{itemize}
+	\item Bayes-Gaussian Maximum Likelihood (DCG-BG-MLE)
+	\item Bayes-Gaussian Expected Maximization (DCG-BG-EM) 
+	\item Bayes-Gaussian Hidden Markov Models (DCG-BG-HMM)
+	\item Bayes-Gaussian structure (DCG-BG)
+	\item Bayes-Gaussian structure - univariate (DCG-BG-Univariate)
+	\item Bayes-Gaussian structure - multivariate (DCG-BG-Multivariate)
+\end{itemize}
+
+\section{Expected Maximization}
+
+EM is partially based on MLE.   MLE has two sets of equation that define the concept:
+\begin{eqnarray}
+	P( \mathcal{X} | {\Theta}) = \Pi _{i=1}^N p( \vec{x}_i | \vec{\theta}) = \mathcal{L}(\Theta | \mathcal{X}) \\
+	\theta ^*  = \arg \max_{\theta} \mathcal{L} (\Theta | \mathcal{X}) 
+\end{eqnarray}
+
+
+EM attempts assess parameters for missing data in a given data set.  
+
+\begin{equation}
+Z = ( \mathcal{X}, \mathcal{Y}) 
+\end{equation}
+
+
+Complete probability function
+\begin{equation}
+p(\mathcal{Z} | \Theta)  = p(\mathcal{X},\mathcal{Y} | \Theta) = p(\vec{y}| \vec{x}, \vec{\theta}) p( \vec{x}| \vec{\theta})
+\end{equation}
+
+Note that 
+\begin{itemize}
+	\item $\mathcal{Y}$ is an unknown variable, and presumed random.  
+	\item $\mathcal{X}$ consists of the observed data. 
+	\item $\Theta$ even when unknown is a constant.
+\end{itemize}
+
+
+
+\begin{equation}
+\mathcal{L} ( \Theta | \mathcal{Z}) = \mathcal{L} ( \Theta | \mathcal{X}, \mathcal{Y}) = h_{\mathcal{X}, \Theta} ( \mathcal{Y})
+\end{equation}
+
+The incomplete likelihood function 
+\begin{equation}
+\mathcal{L}(\mathcal{X}| \Theta)
+\end{equation}
+
+\subsection{Expected Step}
+Goal of the Expected step is to calculate $Q( \Theta , \Theta ^g)$ for each iterative step of the EM algorithm.  
+
+\begin{eqnarray}
+Q ( \Theta , \Theta^g) = E [ \log (p (\mathcal{X}, \mathcal{Y} | \Theta) | Z, \Theta ^g)] \\
+= \int _{\vec{y} \in \mathcal{Y}}\log (p(\mathcal{X}, \mathcal{Y} | \Theta))  f ( \vec{y}| \mathcal{X} , \Theta ^g) d \vec{y}
+\end{eqnarray}
+such that $f(\vec{y}| \mathcal{X}, \Theta)$  is marginal distribution of $\mathcal{Y}$, and $\mathcal{X}$ is not dependent on $\mathcal{Y}$
+
+
+\subsection{Maximization Step}
+The goal of the maximization step is to optimize the sufficient statistics based on the previous guess. 
+\begin{equation}
+\theta^* = \arg \max _{\theta} Q ( \theta , \theta^g)
+\end{equation}
+? Each iteration is guarrentteed to increase the log likelihood and converge.
+
+
+\section{Probabilistic Model}
+\begin{equation}
+p( \vec{x} | \vec{\theta}) = \sum_{i=1} ^M \alpha_i p( \vec{x} |\vec{\theta}_i)
+\end{equation}
+such that 
+\begin{itemize}
+\item $M$ are the number of parameters
+\item $\alpha_i$ are the mixing coefficients
+\item $p(\vec{x} | \vec{\theta}_i)$ are the probabilities of the incomplete data with a known component. 
+\end{itemize}
+
+\begin{eqnarray}
+\log (\mathcal{L} ( \Theta | \mathcal{X})) = \log \prod_{i=1}^N p( \vec{x}_i | \Theta) \\
+= \sum{i=1}^N \log  \sum_{j=1}^N (\alpha _j p( \vec{x}_i | \vec{\theta}_j) ) \\
+\log ( \mathcal{L}(\Theta | \mathcal{X} , \mathcal{Y})) = \log (p ( \mathcal{X}, \mathcal{Y} | \Theta)) \\
+= \sum_{i=1}^N \log (p(\vec{x} , \vec{y}) p(\vec{y})) \\
+=\sum_{i=1}^M \log ( \alpha_{y_i} p (\vec{x}_i | \vec{\theta}_j))
+\end{eqnarray}
+
+Consequences of Bayes' Rule
+\begin{eqnarray}
+p( \vec{y}_i | \vec{x}_i , \vec{\theta}^g) = \frac {\alpha^g _{\vec{y}_i} p_{\vec{y}_1} ( \vec{x}_i | \vec{\theta}_i ^g) }{ p (\vec{x}_i| \vec{\theta}^g ) } \\
+= \frac {\alpha^g _{\vec{y}_i} p_{\vec{y}_1} ( \vec{x}_i | \vec{\theta}_i ^g) }{ \sum_{k=1}^M \alpha_k p_k (\vec{x}_i| \vec{\theta}^g _k ) }
+= a_{ii} \\
+a_{ij} = p( \vec{y}_g | \vec{x}_i , \vec{\theta}^g)
+ = \frac {\alpha^g _{\vec{y}_i} p_{\vec{y}_1} ( \vec{x}_i | \vec{\theta}_i ^g) }{ \sum_{k=1}^M \alpha_k p_k (\vec{x}_i| \vec{\theta}^g _k ) }
+\end{eqnarray}
+
+
+One of the keys to the expected maximum is the unnormalized diagonal.  
