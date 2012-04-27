@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{Segmentation, EM and Gaussian Pattern Detection}
+\author{Dan Beatty}
+%\date{}                                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+%\section{}
+%\subsection{}
+
+
+The assignment from which this paper originates instructs:
+\begin{quote}
+You are given a retinal digital picture in color.  Take the gradient of the monochrome image and use the Expectation-Maximization (EM) algorithm to extract the edge points from the blurred optic disc boundary.
+\end{quote}
+
+What is segmentation?  One text book makes these three points:
+\begin{itemize}
+	\item Segmentation subdivides an image into its constituent regions of objects.
+	\item Segmentation stops when objects of interest in an application have been isolated.
+	\item Image segmentation algorithms generally are based on the basic property of intensity values.
+\end{itemize}
+
+The basic properties consist of abrupt changes and similarities dues to some predefined criteria.  
+
+Abrupt changes in images are highlighted by difference functions such as gradient operations.   Certain basis spaces such as certain splines and varieties of wavelet transforms also contain such transformations.   In this example, the gradient operator is used since that is what is asked for.  
+
+Computational definition of the gradient operator is derived from Taylor series.  In some texts it is computed by spatial filtering.  This case involves using a $3\times 3$ mask, and most text books indicate that the use of two of them (one for row and one for column) is preferred.  
+
+In this case, it simpler to use the other form of 2-D convolution (row convolution followed by column convolution).  For future versions of this library, it is possible to use NSDistantObjects to parallelize the operation with the row and column convolution for significant speed up.  
+
+Also noted in some texts, edge detect can not be performed naively.  The reason is that most edges are blurred with noise (Gaussian or otherwise), which causes false positives to show up in the results of applying differencing filters.  One naive method is to apply thresholding.    In this case, the problem asks to use the EM algorithm to improve such a classification.   
+
+The two classifications are an retinal edge $g_1$, optic disc $g_2$, or non-edge $g_3$.  While the convolutions can be applied to image in Mathematica with its concept of a for loop, for speed sake, the gradient is taken via the dcgRenaissance libraries.  Since this is a TIFF image, the Core Graphics libraries on OS X are used to acquire the image.  This was already done in the BNZCGMatrix libraries, and has been brought over to the dcgRenaissance libraries.  
+
+If the instructions are further understood, the output of this exercise is a matrix (image) consisting of the $g_2$ edges only.  
+
+A few classes needed to be added to the dcg Renaissance framework to solve this problem (that were not there prior).
+\begin{itemize}
+\item Scatter plot class
+\item Gradient Service
+\item EM Service
+\item LDA Service
+\end{itemize}
+Also desired is to modularize dcgMatrix into service classes.  
+
+
+
+
+\end{document}  

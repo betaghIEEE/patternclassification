@@ -1,0 +1,169 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{Proof Notes on White PCA}
+\author{Dan Beatty}
+%\date{}                
+
+
+\date{2-1-2007}                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+The principle components of a multivariate data are defined as the orthonormal basis vectors.  The original data set is denoted $\mathbf{X}$ and the principle components are denoted $\mathbf{\bar{X}}$.
+%All forms of principle component analysis require that the orthonormal eigenvectors and corresponding eigenvales be obtained from the original data.  For multivariate data, the principle components form the orthonormal basis of the data.   Common methods of denoting the basis data is the a bar, $\mathbf{\bar{X}}$ are the basis vectors of $\mathbf{X}$.  
+For any column of $\mathbf{\bar{X}}$ denoted $\mathbf{\bar{x}}$, the covariance matrix is defined in terms of the expectation function, in equation \ref{expectedCovariance}.  
+A covariance matrix can be written in terms of classic eigenvalue decomposition transposed
+\begin{eqnarray*}
+	\Sigma = \xi \{ \mathbf{\bar{x}} \mathbf{\bar{x}}^T \} \label{expectedCovariance} \\
+	\Sigma^T = {\mathbf{V}^{-1}}^T D^T \mathbf{V}^T \label{eigenvalueDecompTranspose} \\
+	\Sigma^T = {\mathbf{V}^{-1}}^T D^T \mathbf{V}^T = V D V^{-1} =\Sigma  \label{eigenvalueDecompTransposeDerivation}
+\end{eqnarray*}
+where $\mathbf{V}$ represents the orthonormal eigenvectors.  In that case $\mathbf{V}^T = \mathbf{V}^{-1}$.  Thus equation \ref{eigenvalueDecompTranspose} derives into equation \ref{eigenvalueDecompTransposeDerivation}.
+
+
+For any vector, $\mathbf{\bar{x}}_i$, the expectation has a few characteristics under the following assumptions:
+\begin{itemize}
+	\item $\mathbf{\bar{X}}$ has zero mean
+	\item $\mathbf{V}$ is orthonormal.  
+\end{itemize}
+The characteristics are:
+\begin{eqnarray}
+	E(\mathbf{v}_i ^T \mathbf{\bar{x}}) = \mathbf{\bar{v}}^T \xi(\mathbf{\bar{x}} ) = 0 \\
+	E((\mathbf{\bar{v}}^T \mathbf{\bar{x}})^2) = \mathbf{v}_i ^T \xi (\mathbf{\bar{x}} \mathbf{\bar{x}}^T) \mathbf{v}_i 
+\end{eqnarray}
+
+\section{Equivalent Whitening Transforms}
+The first idea is to show that these two equations are equal:
+\begin{eqnarray}
+	A_w = \Phi \Lambda^{-1/2} \Phi^T \\
+	A'_w = \Phi  \Lambda^{1/2} 
+\end{eqnarray}
+such that $\Phi
+$ are all eigenvalues of some given $\Sigma$ and $\Lambda$ is a diagonal matrix consisting of the eigenvalues of $\Sigma$.  It is also presumed that $\Phi$ has all of its columns normalized.  
+
+In this case, 
+\begin{equation}
+\Phi^T \Phi = I
+\end{equation}
+This property exists as the inner product of two eigenvectors is defined:
+\begin{eqnarray}
+\langle \phi_i , \phi_j \rangle = 
+\left\{
+\begin{array}{ll}
+	1 & i \equiv j \\
+	0 & i \neq j
+\end{array}
+\right. \label{orthogonalEigenvectors} \\
+\Phi ^T = \Phi^{-1}  \label{orthonormalEigenvectors}
+\end{eqnarray}
+
+As $\Phi$ is orthonormal, $\Phi^{-1} = \Phi^T$.  By property of orthogonal matrices, $\Phi^T \Phi = \Phi \Phi^T = I$.  
+
+Is $A_w = \Phi \Lambda^{-1/2} \Phi^T$ symmetric?   Yes.   
+\begin{equation}
+	A_w ^T = {\Phi^T}^T \Lambda^{-1/2} \Phi^T = \Phi \Lambda^{-1/2} \Phi^T
+\end{equation}
+
+
+
+\subsection{Gaussian Properties}
+
+Gaussian distributions according to \cite[625]{duda-hart-stork} has the following property:
+\begin{equation}
+	\Sigma = \left[
+	\begin{array}{cccc}
+	\sigma_1^2 & 0 & ... & 0 \\
+	0	& \sigma_2^2 & ... & 0 \\
+	\vdots & \vdots & \ddots & \vdots \\
+	0 & 0 & ... & \sigma_n^2 
+	\end{array}
+	\right]
+\end{equation}
+
+Does $A_w \neq A'_w$?  Both are invertible?  $A_w$ is symmetric as $A_w^T = A_w$.   What about $A'_w$?
+\begin{eqnarray}
+	{A'_w} ^T = (\Lambda ^{1/2})^T \Phi^T = \Lambda^{1/2} \Phi ^T \label{AprimeW} \\
+	(A'_w)_{i,j} = \sum_{k_1}  \frac{\phi_{i,k_1}}{\sqrt{\lambda_{k_1, j}}} \\
+	=  \frac{\phi_{ij}}{\sqrt{\lambda_{j}}} \label{rowColumnValuesOfAprimeW}\\
+	({A'_w} ^T )_{ij} = \frac{\phi_{ji}}{\sqrt{\lambda_i}} \label{rowColumnValuesOfAprimeWT}
+\end{eqnarray}
+The values of $A'_w$ as prescribed in equation \ref{rowColumnValuesOfAprimeW}
+Equations \ref{rowColumnValuesOfAprimeW} and \ref{rowColumnValuesOfAprimeWT} show that $A'_w$ is not symmetric.   As such, ${A'_w}^T \neq A'_w$.  Are there any special properties of $A'_w$ with regards to $\Lambda$
+
+\begin{eqnarray}
+	({A'_w}^T A'_w) _{i,j} = \sum_{k_2} (\frac{\phi_{{k_2},i}}{ \sqrt{\lambda_i}})(\frac{\phi_{{k_2},j}}{ \sqrt{\lambda_j}})  \\
+	= \sum _k (\frac{1}{\sqrt{\lambda_i \lambda_j}})\phi_{{k_2},i} \phi_{{k_2},j} \\
+	=\frac{1}{\sqrt{\lambda_i \lambda_j}} \sum_k \phi_{{k_2},i} \phi_{{k_2},j} \\
+	= \frac{1}{\sqrt{\lambda_i \lambda_j}} \langle \vec{\phi}_i, \vec{\phi}_j \rangle \\
+	= \left\{
+	\begin{array}{ll}
+	\frac{1}{\lambda_{i=j}} &  i = j \\
+	0 &  i \neq j \\
+	\end{array}
+	\right. \\
+	({A'_w}^T A'_w) \equiv \Lambda ^{-1} 
+\end{eqnarray}
+If $A'_w$ was symmetric, then $A'_w = \Lambda ^{-1/2}$? 
+\begin{eqnarray}
+	({A'_w}^T A'_w) \equiv \Lambda \\
+	({A'_w}^T A'_w) = A'_w A'_w \\
+	{A'_w A'_w} \equiv \Lambda
+\end{eqnarray}
+Since $A'_w$ is not symmetric, 
+%Unfortunately 
+a puzzle exists for the reverse multiplication which should be equal.  Observe:
+\begin{eqnarray}
+(A'_w {A'_w}^T )^T =  ({A'_w}^T)^T {A'_w}^T = A'_w {A'_w}^T \label{symmetricAwAwT} \\
+(A'_w {A'_w}^T ) _{i,j} = \sum_{k_3} (\phi_{i,{k_3}} \sqrt{\lambda_{k_3}})(\phi_{j,{k_3}} \sqrt{\lambda_{k_3}})   \\
+ = \sum_{k_3} \lambda_{k_3} (\phi_{i,{k_3}})(\phi_{j,{k_3}} )   
+\end{eqnarray}
+
+%These equations show that $A'_w$ is itself orthogonal (equation \ref{orthogonalAprimeW}), the eigenvector matrix is itself orthonormal (equations \ref{orthogonalEigenvectors} and \ref{orthonormalEigenvectors}).  This property makes $A'_w$ such non-singular matrix to satisfy the Law of Inertia and principle of congruence.  
+
+
+$A'_w$ satisfies the Law of Inertia and principle of congruence:
+\begin{eqnarray}
+	\textrm{let }B_1 = {A'_w }^T D A'_w  \label{premiseOfCongruent}\\
+	B_1^T = ({A'_w} ^T D A'_w)^T = ({A'_w} ^T D^T ({A'_w} ^T)^T ) = ({A'_w} ^T D^T A'_w  ) = ({A'_w} ^T D A'_w  )  = B_1 \label{congruentPrinciple} \\
+	\textrm{let }B_2 =   A'_w D {A'_w }^T  \label{premiseOfCongruentReversed}\\
+	(B_2)^T =  ({A'_w }^T)^T D {A'_w}^T = A'_w D {A'_w}^T  \label{congruentPrincipleInReverse} 
+\end{eqnarray}
+Under this principle, $\Phi$ also supports congruency.  Since  $\Phi$ is chosen to be orthonormal eigenvectors, the formula:
+\[
+B = \Phi A \Phi^T
+\]
+assigns $B$ to be a diagonal matrix with the eigenvalues of $A$.
+
+\section{What does Congruency with Eigenvectors have to do with the Whitening Transform?}
+For the Whitening Transform stated as $A_w = \Phi \Lambda^{-1/2}\Phi^T$, the property of congruence for normalized eigenvectors can be applied to show:
+\begin{eqnarray}
+A_w \Sigma A_w =^? I \\
+\Phi \Lambda^{-1/2} \Phi^T  \Sigma \Phi \Lambda ^{1/2} \Phi^T \\
+\textrm{Congruency Principle } \Phi^T  \Sigma \Phi = \Lambda \\
+\Phi \Lambda^{-1/2} \Phi^T  \Sigma \Phi \Lambda ^{1/2} \Phi^T  = \\
+\Phi \Lambda^{-1/2} \Lambda \Lambda ^{-1/2} \Phi^T  \\
+\Phi \Lambda^{-1/2} \Lambda ^{1/2} \Phi^T = \\
+\Phi I \Phi^T = I 
+\end{eqnarray}
+
+What about $A'_w$
+\begin{eqnarray}
+{A'_w}^T \Sigma A_w =^? I \\
+\Lambda^{-1/2} \Phi ^T \Sigma \Phi \Lambda^{-1/2} = \\
+\Lambda^{-1/2} \Lambda \Lambda^{-1/2}  = I\\
+\end{eqnarray}
+
+In this case, the similarity of $A'_w$ and $A_w$ allow for similar transforms of Gaussian distributions, and formulae related there of.  While they are similar, they are not identically equivalent.  Their similarity allows for them to be row equivalent, and for the transformed matrices to be similar.  In this special case, they produce the identity matrix in both cases.  However, this is a special case.  
+
+
+\bibliography{../patternNotes.bib}
+\bibliographystyle{abbrv}
+\end{document}

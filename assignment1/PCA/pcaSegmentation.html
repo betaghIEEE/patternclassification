@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>PCA Analysis using Core Image</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/mn.html)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/mn.html)"> 
+<!-- html --> 
+<meta name="src" content="pcaSegmentation.tex"> 
+<meta name="date" content="2007-05-10 12:28:00"> 
+<link rel="stylesheet" type="text/css" href="pcaSegmentation.css"> 
+</head><body 
+>
+  <div class="maketitle">
+
+
+<h2 class="titleHead">PCA Analysis using Core Image</h2>
+<div class="author" ><span 
+class="cmr-12">Daniel Beatty</span></div>
+<br>
+<div class="date" ><span 
+class="cmr-12">May 10, 2007</span></div>
+  </div>
+  <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-10001"></a>Introduction</h3>
+<!--l. 35--><p class="noindent">The core essence of Principle Component Analysis
+is in finding a set of orthogonal basis vectors for a
+collection of vectors assembled in a matrix. Such a
+basis allows the original data to mapped into
+this orthogonal space. There are well studied
+methods for obtaining principle components
+such as Karhunen-Loeve and Singular Value
+Decomposition. While it is true that they each
+obtain equivalent results, how they do it determines
+their effectiveness at achieving these results. Also,
+some methods have side-products which may be
+useful.
+<!--l. 37--><p class="indent">  In the end, the principle components are simply
+defined in terms of eigenvectors and their eigenvalues
+for a &#8220;scatter&#8221; matrix. These vectors happen to
+belong to the columns of the <span 
+class="cmmi-10x-x-109">V </span>matrix of the SVD
+<span 
+class="cmbx-10x-x-109">A</span> = <span 
+class="cmbx-10x-x-109">U&#x039B;V</span><sup><span 
+class="cmmi-8">T</span> </sup>. Likewise, the eigenvalues of the
+scatter matrix are part of the diagonal matrix &#x039B;.
+Since the SVD was part of the LAPACK wrappers
+of the dcgRenaissance, this logical choice of
+implementation for acquiring the SVD.
+<!--l. 39--><p class="indent">  This experiments original instructions was to
+use Principal Component Analysis (PCA) in
+combination with the Whitening transform and
+Linear Discriminant Analysis (LDA) to classify and
+segment the optic disc from the background. The PCA by itself is not a classifier. Rather it finds
+                                              orthogonal vectors that a representative of the data.
+                                              Applying the principle components to the data
+                                              simply transforms the data into another orthogonal
+                                              space. Also, Fisher&#8217;s Linear/Multiple Discriminant
+                                              Analysis depends on previous samples for each
+                                              desired class.
+                                              <!--l. 41--><p class="indent">   For demonstration purposes, the points in
+                                              question are preselected on a pixel coordinate
+                                              system. The pixels for each class are therefore
+                                              used in determining the LDA. Accuracy of the
+                                              LDA does have some dependency on the quality
+                                              of the samples chosen. The chosen test image
+                                              happens to be a classic image of a human optic
+                                              disc. Fortunately, the disc is in the center of the
+                                              image. Thus one choice for member of the disc
+                                              would be all pixels in a radius of 25 pixels from
+                                              the center. Pixels close to borders of the image
+                                              are definitely not part of the optic disc. Thus
+                                              we have a collection samples to call our class
+                                              samples.
+                                              <!--l. 43--><p class="indent">   It it were not for this convenient example, a more
+                                              elaborate interface would be required to identify
+                                              samples belong to specific classes. This is useful in
+                                              an application, but not a unit test type experiment.
+                                              Such region of interest exercises, even with Core
+                                              Image, are deemed beyond the scope of this
+                                              exercise.
+                                              <!--l. 46--><p class="indent">   Many parameters may be considered for
+                                              PCA. A single point itself is not particularly
+                                              interesting, as such an eigenvector would be a
+
+scalar. However, neighborhoods of both the image
+itself, and transformations such a gradients, edge
+transformations, and others tend to be quite
+interesting for this experiment.
+<!--l. 48--><p class="indent">  The neighborhood concept comes from digital
+image processing techniques of segmentation called
+Local Processing Edge Linking and Boundary
+Detection. In this technique, boundaries are
+determined by the image&#8217;s gradient in row wise,
+column wise, and in some cases diagonal wise. From
+any of these, a set of row vectors may be formed
+consisting the values for the point itself in both the
+original image and resulting images from the
+application of gradient and other operators. In
+addition the row vector can include neighborhood
+values, differences, angles, and angle differences. At
+which point one has a substantial set of parameters
+to categorize any point. The use of PCA allows
+these parameters to be mapped to an orthogonal
+space, which in some cases allows simplified
+categorization.
+<!--l. 51--><p class="indent">  In this case, we are using 5 by 5 neighborhoods of
+the gradient differences, angle differences, the
+original image neighborhood, and gradient row and
+column neighborhoods. While this is certainly
+excessive, it does allow for a demonstration.
+<!--l. 53--><p class="noindent">
+  <h3 class="sectionHead"><span class="titlemark">2   </span> <a 
+ id="x1-20002"></a>Unit Test of PCA</h3>
+<!--l. 54--><p class="noindent">The experiment requested for this project is
+significantly more complex than what a unit test
+should test. Any unit test should have a simple
+input, simple output, and known comparison for
+the output. An example of this would be say a
+matrix
+<!--l. 56--><p class="indent">  <div class="eqnarray">
+  <center class="math-display" >
+<img 
+src="pcaSegmentation0x.png" alt="                   (                 )
+                   ||{  1   2   3   4  ||}
+              A  =    5   6   7   8      (1)
+                   ||  9   10  11  12 ||
+                   (  13  14  15  16 )
+      (                              )
+      ||{  - 0.13 0.82   - 0.54    0.03  ||}
+ U  =    - 0.34 0.42   0.75     0.36      (2)
+      ||(  - 0.54 0.03   0.13     - 0.8 ||)
+         - 0.75 - 0.36  - 0.341   0.42
+                  (  38  0.    0. 0. )
+                  ||{                  ||}
+                &#x039B;    0.  2.07  0. 0.     (3)
+                  ||(  0.  0.    0. 0. ||)
+                     0.  0.    0. 0.
+      (|  - 0.42 - 0.71  - 0.16  - 0.52 )|
+      |{  - 0.47 - 0.27  0.60   0.57   |}
+VT  =                                    (4)
+      ||(  - 0.52 0.17   - 0.72  0.41   ||)
+         - 0.56 0.61   0.28   - 0.47
+                      SVD(A)   = U &#x039B;V T  (5)
+                                     T
+                  V = eigenvectos(AA   )  (6)
+                  &#x039B; = eigenvalues(AAT  )  (7)
+                                              " class="math-display" ></center>
+                                              </div>The values for <span 
+class="cmbx-10x-x-109">U</span>, <span 
+class="cmbx-10x-x-109">&#x039B;</span>, and <span 
+class="cmbx-10x-x-109">V</span>. are computed using
+                                              Mathematica&#8217;s pre-canned Singular Value
+                                              Decomposition method. A comparison between this
+                                              and the unit test can be valuable.
+                                              <!--l. 100--><p class="indent">   Similarly, the results from the MDA assignment
+                                              using Mathematica can be used as a unit test for
+                                              the LDA/ MDA component. The results are
+                                              expected to be similar, within a scaling factor.
+                                              <!--l. 102--><p class="noindent">
+                                                <h3 class="sectionHead"><span class="titlemark">3   </span> <a 
+ id="x1-30003"></a>Interface design</h3>
+                                              <!--l. 103--><p class="noindent">In order to complete the assignment, a tool
+                                              is necessary that uses this build framework,
+                                              identifies the regions of interest for the MDA/LDA
+                                              preprocessing, and neighborhoods, and use these
+                                              libraries to produce the principle components. The
+                                              results from the preprocess operations need to be
+                                              fed into a mask generating classifier.
+                                              <!--l. 105--><p class="indent">   <hr class="figure"><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+
+<a 
+ id="x1-30011"></a>
+
+<!--l. 107--><p class="noindent"><img 
+src="neighborhoodPCA.png" alt="PIC"  
+>
+<br> <table class="caption" 
+><tr valign="baseline" class="caption"><td class="id">Figure&#x00A0;1: </td><td  
+class="content">This panel selects the neighborhood,
+and components to use.</td></tr></table><!--tex4ht:label?: x1-30011 -->
+
+<!--l. 110--><p class="indent">  </td></tr></table></div><hr class="endfigure">
+<!--l. 113--><p class="indent">  <hr class="figure"><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+
+<a 
+ id="x1-30022"></a>
+
+<!--l. 115--><p class="noindent"><img 
+src="regionOfInterestPanel.png" alt="PIC"  
+>
+<br> <table class="caption" 
+><tr valign="baseline" class="caption"><td class="id">Figure&#x00A0;2:  </td><td  
+class="content">This  panel  selects  the  regions  of
+interest, and instructs the building of classes.</td></tr></table><!--tex4ht:label?: x1-30022 -->
+
+<!--l. 118--><p class="indent">  </td></tr></table></div><hr class="endfigure">
+<!--l. 120--><p class="indent">  <hr class="figure"><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+
+<a 
+ id="x1-30033"></a>
+
+<!--l. 122--><p class="noindent"><img 
+src="opticDisc.png" alt="PIC"  
+>
+<br> <table class="caption" 
+><tr valign="baseline" class="caption"><td class="id">Figure&#x00A0;3: </td><td  
+class="content">Original image of the optic disc of a
+human eye.</td></tr></table><!--tex4ht:label?: x1-30033 -->
+
+<!--l. 125--><p class="indent">  </td></tr></table></div><hr class="endfigure">
+<!--l. 128--><p class="indent">  <hr class="figure"><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+
+<a 
+ id="x1-30044"></a>
+
+<!--l. 130--><p class="noindent"><img 
+src="numberOfClassificationsSlider.png" alt="PIC"  
+>
+<br> <table class="caption" 
+><tr valign="baseline" class="caption"><td class="id">Figure&#x00A0;4: </td><td  
+class="content">Slider panel for specifying the number
+of classifications.</td></tr></table><!--tex4ht:label?: x1-30044 -->
+
+<!--l. 133--><p class="indent">  </td></tr></table></div><hr class="endfigure">
+<!--l. 135--><p class="indent">  <hr class="figure"><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+
+<a 
+ id="x1-30055"></a>
+
+<!--l. 137--><p class="noindent"><img 
+src="addRegionsCheckBoxes.png" alt="PIC"  
+>
+<br> <table class="caption" 
+><tr valign="baseline" class="caption"><td class="id">Figure&#x00A0;5: </td><td  
+class="content">Table for selecting regions to add to
+a classification.</td></tr></table><!--tex4ht:label?: x1-30055 -->
+
+<!--l. 140--><p class="indent">  </td></tr></table></div><hr class="endfigure">
+<!--l. 142--><p class="indent">  numberOfClassificationsSlider
+<!--l. 144--><p class="indent">  Region of Interest Control:
+    <ul class="itemize1">
+    <li class="itemize">List Control</li></ul>
+<!--l. 149--><p class="indent">  Non-kernel based Region of Interest View
+applies to a view that displays both the image and
+boxes identifying regions of interest. A region of
+interest contains points known to belong to a
+classification.
+    <ul class="itemize1">
+    <li class="itemize">ROIView <span 
+class="cmsy-10x-x-109">&#x2192; </span>OpenGLView? QuartzView?
+    </li>
+    <li class="itemize">Initialize called by either the opening of a nib
+    file or object initialization.
+         <ul class="itemize2">
+         <li class="itemize">&#8220;initWithFrame&#8221;
+         </li>
+         <li class="itemize">&#8220;awakeFromNib&#8221;</li></ul>
+    </li>
+    <li class="itemize">Drawing methods
+    <br class="newline">drawRect
+    </li>
+    <li class="itemize">What do we need:
+         <ul class="itemize2">
+         <li class="itemize">Need ability to identify selected ROI.
+         </li>
+         <li class="itemize">Overrides on mouse and arrow.</li></ul>
+    </li></ul>
+<!--l. 168--><p class="indent">  Mask Selection:
+    <ul class="itemize1">
+    <li class="itemize">Selection of masks (maskControl)</li></ul>
+<!--l. 173--><p class="indent">  Neighborhood Builder
+    <ul class="itemize1">
+    <li class="itemize">Size
+    </li>
+    <li class="itemize">Component                                   </li>
+                                                  <li class="itemize">Composition
+                                                      <ul class="itemize2">
+                                                      <li class="itemize">gradient
+                                                      </li>
+                                                      <li class="itemize">Original Image
+                                                      </li>
+                                                      <li class="itemize">Gradient difference
+                                                      </li>
+                                                      <li class="itemize">Gradient Angle
+                                                      </li>
+                                                      <li class="itemize">Gradient Angle Difference</li></ul>
+                                                  </li></ul>
+                                              <!--l. 189--><p class="indent">   Neighborhood Control
+                                                  <ul class="itemize1">
+                                                  <li class="itemize">Component List
+                                                  </li>
+                                                  <li class="itemize">(Action) Construct Neighborhoods</li></ul>
+                                              <!--l. 195--><p class="indent">   Bayes Gaussian Multivariate Control Control
+                                                  <ul class="itemize1">
+                                                  <li class="itemize">Multivariate Classes
+                                                  </li>
+                                                  <li class="itemize">Classifier List
+                                                      <ul class="itemize2">
+                                                      <li class="itemize">Name
+                                                      </li>
+                                                      <li class="itemize">Member regions
+                                                      </li>
+                                                      <li class="itemize">(Action) add classification
+                                                      </li>
+                                                      <li class="itemize">(Action) add region to classification.</li></ul>
+                                                  </li></ul>
+                                                 
+</body></html> 
+
+
+

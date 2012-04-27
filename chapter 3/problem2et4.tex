@@ -1,0 +1,250 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\DeclareMathOperator*{\argmax}{arg\,max}
+%\DeclareMathOperator*{\argmax}{argmax}
+
+\title{Homework: aka the Maximum Likelihood and Bayesian Parameters}
+\author{Dan Beatty}
+%\date{}                                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+%\section{}
+%\subsection{}
+
+
+\section{Introduction}
+Both of these problems are exercises on maximum-likelihood estimation.
+
+\section{Problem 2 from \cite[140-141]{duda-hart-stork}}
+\begin{quote}
+Let $x$ have a uniform density
+\begin{equation} 
+p(x | \theta) ~ U(0, \theta)
+	\left\{
+	\begin{array}{ll}
+		\frac{1}{\theta} & 0 \le x \le \theta \\
+		0	& \textrm{otherwise}
+	\end{array}
+	\right.
+\end{equation}
+\begin{itemize}
+	\item Suppose that $n$ samples $\mathcal{D} = (x_1, ..., x_n)$ are drawn independently according to $p(x | \theta)$.  Show that the maximum-likelihood estimate for $\theta$ is $\max [\mathcal{D}]$ - that is, the value of the maximum element in $\mathcal{D}$.
+	\item Suppose that $n=5$ points are drawn from the distribution and the maximum value of which happens to be $ \argmax _{k} x_k = 0.6$.  Plot the likelihood $p(\mathcal{D}, \theta)$ in the range $0 \le \theta \le 1$.  Explain in words why you do not need to know the values of the other four points.  
+\end{itemize}
+
+\end{quote}
+
+
+In this case, 
+\begin{eqnarray}
+p(\mathcal{D} | \theta) = \prod _{k=1}^{n} \frac{1}{\theta} = \frac{n}{\theta} \\
+l (\theta) = \ln p(\mathcal{D}| \theta) = \sum_{k=1}^n (\ln 1 - \ln \theta) \\
+\nabla _{\theta} l(\theta) = \sum _{k=1}^{n} \nabla _{\theta} \ln P(\vec{x}_k | \theta) \\
+= \sum_{k=1}^n \nabla_{\theta} \ln 1 -  \nabla_{\theta} \ln \theta  = \sum_{k=1}^n \frac{1}{\theta}
+\end{eqnarray}
+
+In this case, the only way for $\max_{l(\theta)}$ to be satisfied is for $\theta = \infty$.   This is actually the minimum.  
+
+On the other, the largest value available is the largest $x_k$ of $\mathcal{D}$.  Why?  The value for $\frac{n}{\theta}$, assuming that $\theta$ is always positive is maximum as $\theta \to 0$.  The reverse of the condition causes $p(D|\theta) = 0$ the instance that $\theta < x_k$.  Thus its maximum is at $x_k$.   This is the intuitive and trivial answer.  
+
+
+\section{Problem 4 from \cite[141]{duda-hart-stork}}
+\begin{quote}
+	Let $\vec{x}$ be a $d$-dimensional binary (0 or 1) vector with a multivariate Bernoulli distribution
+	\begin{equation}
+	P (\vec{x} | \vec{\theta}) = \prod _{i=1}^d \theta_i ^{x_i} (1 - \theta_i) ^{1-x_i}
+	\end{equation}
+	where $\vec{\theta} = ( \theta_1, ..., \theta_d)^T$ is an unknown parameter vector, $\theta_i$ being the probability that $x_i = 1$.  Show that the maximum-likelihood estimate for $\vec{\theta}$ is 
+	\begin{equation}
+		\hat{\vec{\theta}} = \frac{1}{n} \sum_{k=1}^{n} \vec{x} _k
+	\end{equation}
+\end{quote}
+
+The estimation is simply the sample mean. 
+
+
+The book gives the following equations:
+
+Likelihood of  $\theta$  with respect to the set of samples. \\
+\begin{equation}
+	p(\mathcal{D} | \vec{\theta}) = \prod _{k=1}^n p( \vec{x}_k | \theta)  \label{likelihood}
+\end{equation}
+	\textrm{ Log likely hood function} 
+\begin{eqnarray}
+	l(\theta) = \ln p(D | \theta) = \sum _{k=1} ^n \ln p(\vec{x}_k | \vec{\theta}) \label{logLikelihood}\\
+	\hat{\theta} = \max _\theta l(\theta) \label{maxParametersMLE}
+\end{eqnarray}
+
+%This does not make sense: substitution into $ p(D |\theta) = \prod _k \prod _i \theta^{\vec{x}_i} _i (1- \theta_i)^{1-\vec{x}_i}$.
+
+%Instead try substituting into $l(\vec{\theta})$:
+%\begin{eqnarray}
+%	\nabla l(\theta) = \sum_{k=1}^n  \ln p(\vec{x}_k | \vec{\theta}) \\
+%	= \sum_{k=1}^n \ln (\prod_{i=1} ^d \theta_i ^{x_i} (1 - \theta_i)^{1- \vec{x}_i}) 
+%\end{eqnarray}
+Take the log likelihood function and maximize $\theta$
+
+
+\begin{eqnarray}
+%	p(\mathcal{D} | \vec{\theta}) = \prod _{k=1}^n p( x_k | \theta) \\
+	\ln l(\theta) = \sum_{k=1}^n \ln p(\vec{x_k} | \vec{\theta}) \\
+	\textrm{substitution} \\
+	\sum_{k=1}^n  \ln   (\prod_{i=1} ^d \theta_i ^{x_i} (1 - \theta_i)^{1- x_i}) \\
+	\textrm {multiplication property of ln} \\
+	= \sum_{k=1}^n  \ln  (\prod_{i=1} ^d \theta_i ^{x_i} (1 - \theta_i)^{1- x_i}) \\
+	= \sum_{k=1}^n  \sum_{i=1}^d (\ln (\theta_i ^ {x_i} (1-\theta_i) ^{1- x_i } ) )\\
+	= \sum_{k=1}^n  \sum_{i=1}^d (\ln (\theta_i ^ {x_i}) + \ln ((1-\theta_i) ^{1- x_i }) ) \\
+	= \sum_{k=1}^n  \sum_{i=1}^d (x_i \ln (\theta_i)  + (1 -x_i) \ln(1-\theta_i))\\
+	= \sum_{k=1}^n  \sum_{i=1}^d (x_i \ln (\theta_i)  + \ln(1-\theta_i) -x_i \ln(1-\theta_i)) \\
+	\textrm{ Apply the gradient operator} \\
+	\nabla_{\theta} l(\theta)
+	= \sum_{k=1}^n  \sum_{i=1}^d (\nabla_{\theta_i} x_i \ln (\theta_i)  + \nabla_{\theta_i} \ln(1-\theta_i) -\nabla_{\theta_i} x_i \ln(1-\theta_i)) \\
+	= \sum_{k=1}^n  \sum_{i=1}^d (\frac{x_i} {\theta_i}  -  \frac{1}{1-\theta_i} + \frac {x_i} {(1-\theta_i)}) \\
+	\textrm{ Set to zero, and see the factors of $\theta$} \\
+	0 = \sum_{k=1}^n  \sum_{i=1}^d (\frac{x_i} {\theta_i}  -  \frac{1}{1-\theta_i} + \frac {x_i} {(1-\theta_i)}) \\
+	\textrm{combine like terms} \\
+	0 = \sum_{k=1}^n  \sum_{i=1}^d \frac{ x_i -\theta_i} {\theta_i - \theta_i ^2} \\
+	\textrm{ To goto zero, use numerator for any i = d, and any d} \\
+	0 = \sum_{k=1}^n  { x_k -\theta}  \\
+	\textrm{for this to be true }
+	\theta = \frac{1}{n} \sum_{k=1}^n x_k 
+\end{eqnarray}
+
+Another approach, the expected value for $\sigma$.  
+\begin{eqnarray}
+	\mu = E [x] = \int \vec{x} p(\vec{x} | \vec{\theta}) d\vec{x}\\
+	\theta = E [(\vec{x} - \vec{\theta})(\vec{x} - \vec{\theta})]  \label{expectedSigma}\\
+	= \int (\vec{x}- \vec{\theta})(\vec{x} - \vec{\theta}) p(\vec{x}| \vec{\theta}) d \vec{x} \\
+%	\textrm{ For any one element } \sigma_{ij} = E [(x_i - \theta_i)(x_j - \theta_j)] \\	
+	= \int (\vec{x}- \vec{\theta})(\vec{x} - \vec{\theta})^T \prod_{i=1}{d}(\theta_i ^{x_i} (1 - \theta_i) ^{1-x_i})  d \vec{x} \\
+	\textrm{Backtrack steps to \ref{expectedSigma} }
+\end{eqnarray}
+
+
+\subsection{Facts about the Binomial (Bernoulli) Distribution} 
+Definition of a binomial distribution
+\begin{quote}
+	If $p$ is the probability that an event will happen in any single trial (called the probability of a success) and $q= 1-p$ is the probability that it will fail to happen in any single trial, then the probability that the event will happen exactly $X$ times in $N$ trials is given by
+	\begin{eqnarray}
+	p(X) = 
+	\left(
+	\begin{array}{l}
+		N \\
+		X 
+		\end{array}
+		\right)
+		p ^X q^{N-X} = \frac{N!}{X! (N-X)!} p^X q^{N-X}
+	\end{eqnarray}  
+	where $X=0,1,2,..., N$ and $N! = N(N-1)(N-2)...1$ and $0! = 1$ by definition.
+\cite[155]{schaums-statistics}
+\end{quote}
+The mean of such a distribution is defined: $\mu = Np$ and the variance is defined $\sigma^2 = Npq$.
+
+\newpage
+\section{Problem 7}
+If the distribution has another distribution model.  
+
+\begin{quote}
+Show that if our model is poor, the maximum-likelihood classifier we derive is not the best- even among our (poor) model set - by exploring the following example.  Suppose we have two equally probable categories (i.e. $P(\omega_1) = P(\omega_2) = 0.5$).  Furthermore, we know that $p(x | \omega_1) ~ N(0,1)$ but assume that $p(x |\omega_2) ~ N(\mu , 1)$.  (That is, the parameter $\theta$ we seek by maximum-likelihood techniques is the mean of the second distribution.)  Imagine, however, that the true underlying distribution is $p(x| \omega_2) ~N(1, 10^6)$.
+\begin{enumerate}
+	\item What is the value of our maximum-likelihood estimate $\hat{\mu}$ in our poor model, given a large amount of data?
+	\item What is the decision boundary arising from this maximum-likelihood estimate in the poor model?  
+	\item Ignore for the moment the maximum-likelihood approach, and use the methods from Chapter 2 to derive the Bayes optimal decision boundary given the true underlying distributions: $p(x|\omega_1) ~ N(0,1 )$ and $p(x | \omega_2) ~N(1, 10^6)$.  Be careful to include all portions of the decision boundary.  
+	\item Now consider again classifiers based on the (poor) model assumption of $p(x | \omega_2) ~ N(\mu | 1)$.  Using your result immediately above, find  a new value for $\mu$ that will give lower error than the maximum-likelihood classifier.  
+	\item Discuss these results, with particular attention to the role of knowledge of the underlying model.  
+\end{enumerate}
+
+\end{quote}
+
+\begin{eqnarray}
+	p(\omega_1) = p(\omega_2) = 0.5 \\
+	p(x | \omega_1) \sim N(0,1) \\
+	 p(x | \tilde \omega_2) \sim N ( \mu , 1) \\
+	p(x | \omega_2) \sim N(1, 10^6)
+\end{eqnarray}
+
+MLE for $\hat{\mu}$ 
+\begin{eqnarray}
+	p( x | \omega_1, \mu_1 ) \sim N( 0, 1) \\
+	p( x | \hat{\omega_2} , \mu_2) \sim N (1, 10^6) \\
+	p( D | \theta)  = \prod _{k=1} ^n  p( x_k | \theta) \\
+	p( x | \omega_1) = \frac{1}{\sqrt{2\pi}} \exp [ -\frac{1}{2} (\frac{x- \mu_1}{\sigma_1})^2] \\
+	p( x | \omega_2) = \frac{1}{\sqrt{2\pi}} \exp [ -\frac{1}{2} (\frac{x- \mu_2}{\sigma_2})^2] \\
+	\ln (p( x | \omega_1)) = \ln (\frac{1}{\sqrt{2\pi}} \exp [ -\frac{1}{2} (\frac{x- \mu_1}{\sigma_1})^2]) \\
+	\ln (p( x | \hat{\omega_2})) = \ln (\frac{1}{\sqrt{2\pi}} \exp [ -\frac{1}{2} (\frac{x- \mu_2}{\sigma_2})^2]) \\
+	\ln (p( x | \omega_1)) = \ln (\frac{1}{\sqrt{2\pi}} \exp [ -\frac{x^2}{2} ]) \\
+	\ln (p( x | \omega_1)) = \ln (\frac{1}{\sqrt{2\pi}}) + \ln ( \exp [ -\frac{x^2}{2} ]) \\
+	\ln (p( x | \omega_1)) = \ln 1 - \ln \sqrt{2\pi} - \frac{x^2}{2}  \\
+	\ln (p( x | \omega_1)) = 0 - \frac{1}{2}\ln 2\pi - \frac{x^2}{2}  \\
+	\ln (p( x | \omega_1)) =  -\frac{1}{2}\ln 2\pi - \frac{x^2}{2}  \\
+	\ln (p( x | \omega_2, \mu_2)) = \ln (\frac{1}{\sqrt{2\pi}} \exp [ -\frac{1}{2} (\frac{x- \mu_2}{1})^2]) \\
+	\ln (p( x | \omega_2, \mu_2)) = \ln (\frac{1}{\sqrt{2\pi}} )    -\frac{1}{2} (x- \mu_2)^2\\
+	\ln (p( x | \omega_2, \mu_2)) =  -\frac{1}{2}\ln 2\pi    -\frac{1}{2} (x- \mu_2)^2\\
+	\frac{d}{d\mu_2} \ln (p( x | \omega_2, \mu_2)) =   -(2) \cdot (-\frac{1}{2}) (x- \mu_2) \\
+	\frac{d}{d\mu_2} \ln (p( x | \omega_2, \mu_2)) =   (x- \mu_2) \\
+	\sum_{k=1} ^n \frac{d}{d\mu_2} \ln (p( x | \omega_2, \mu_2)) = \sum _{k=1}^n (x_k - \mu_2) = 0
+	\therefore \mu_2 = \sum_{k=1}^n x_k 
+\end{eqnarray}
+
+\subsection{Silly question}
+Was there a decision boundary description made in this chapter that was different than what we saw in chapter 2?   In chapter two, we saw a a concept called the discriminating function, denoted $g_i(x)$ and said that a sample $x$ satisfied a particular $g_i(x)$  in conditions specified in terms of a partial-continuous function.  In the two category case, we saw a special case where signs of the difference were enough to discriminate.   
+
+Answer to this question answers part 2 of the problem, the discriminant function determined via MLE is for the Gaussian approximation of the data, which defines a very different discrimination function than the actual distribution.  Both are Gaussian.  However, if the data says that the variance is $\sigma_2 = 1 \neq 10^6$, then these two Gaussian distributions generate very different discrimination functions.  Furthermore, $\tilde p(x | \omega^2_2)$ dominates where it should not.  
+
+\newpage
+\section{Problem 8}
+\begin{quote}
+Consider an extreme case of general issue discussed in Problem 7, one in which it is possible that the maximum-likelihood solution leads to a worst possible classifier, that is, one with an error that approaches 100\% (in probability).  Suppose our data in fact comes from two one-dimensional distributions of the forms:
+\begin{eqnarray}
+	p(x| \omega_1) = [(1-k)\delta (x-1) + k \delta(x + X)] \\
+	p(x | \omega_2) = [(1-k)\delta (x+1) + k \delta (x - X)]
+\end{eqnarray}
+where $X$ is positive, $0 \le k < 0.5$ represents the portion of the total probability mass concentrated at the point $\pm X$
+  and $\delta(\cdot)$ is the Dirac delta function.  Suppose our poor models are of the form $p(x| \omega_1, \mu_1)~N(\mu_1 , \sigma_1 ^2)$ and $p(x | \omega_2 , \mu_2) ~N(\mu_2, \sigma_2 ^2)$ and we form a maximum likelihood classifier.  
+\begin{enumerate}
+	\item Consider the symmetries in the problem and show that in the infinite data case the decision boundary will always be at $x=0$, regardless $k$ and $X$.
+	\item Recall that the maximum-likelihood estimate of either mean, $\hat{\mu}_i$is the mean of its distribution.  For a fixed $k$, find the value of $X$ such that the maximum likelihood estimates of the means ``switch''  that is $\hat{\mu}_1 \ge \hat{\mu}_2$.
+	\item Plot the true distributions and the Gaussian estimates for the particular case $k=0.2$ and $X=5$.  What is the classification error in this case?
+	\item Find a dependence $X(k)$ which will guarantee that the estimated mean $\hat{\mu}_1$ of $p(x | \omega_1)$ is less than zero (By symmetry, this will also ensure $\hat{\mu}_2$.)
+	\item Given your $X(k)$ just derived, state the classification error in terms of $k$.  
+	\item Suppose we constrained our model space such that $\sigma_1 ^2 = \sigma _2 ^2 =1 $ (or indeed any other constant).  Would that change the above results?
+	\item Discuss how if our model is wrong (here, does not include the delta functions), the error can approach  100\% (in probability).  Does this surprising answer arise because we have found some local minimum in parameter space? 
+\end{enumerate}
+
+\end{quote}
+
+As stated the assumption of MLE is in play, namely $p(x | \omega_1) ~N(\mu_1 , \sigma^2 _1)$ and $p(x | \omega^2 _2) ~N(\mu_2 , \sigma_2)$.  %Using MLE equations (equations \ref{likelihood}, \ref{logLikelihood} \ref{maxParametersMLE}) we can derive the $\mu_1,\mu_2, \sigma^2_1, \sigma^2 _2$ values.  
+Using the definitions of $\mu$ and $\sigma^2$ we can derive the approximate sample mean and sample variance. 
+
+\begin{eqnarray}	
+	\mu_1 = E[x] = \int_{-\infty} ^{\infty}  x p(x) dx \\
+	= \int_{-\infty} ^{\infty}  x [(1-k)\delta (x-1) + k \delta(x + X)] dx \\
+	= \int_{-\infty} ^{\infty}   [(x-kx)\delta (x-1) + kx \delta(x + X) ] dx \\
+	= \int_{-\infty} ^{\infty}   (x-kx)\delta (x-1) dx + \int_{-\infty} ^{\infty} kx \delta(x + X)  dx \\
+	=  (1 - k) - kX  \\
+	\textrm{by symmetry } \mu_1 =  (1 + k) - kX  \\
+	\sigma^2_1 = E[(x-\mu)^2]  \\
+	= \int _{-\infty} ^{\infty} (x-\mu)^2 p(x) dx \\
+	= \int _{-\infty} ^{\infty} (x-\mu)^2 (1-k)\delta (x-1) + k (x-\mu)^2 \delta(x + X) dx \\
+	= \int _{-\infty} ^{\infty} (x-\mu)^2 (1-k)\delta (x-1) dx +  \int _{-\infty} ^{\infty} k (x-\mu)^2 \delta(x + X) dx\\
+	=  (1-(1 + k) - kX)^2 (1-k)  +   k (X-(1 - k) - kX)^2   \\
+	=  (-k(1 + X) )^2 (1-k)  +   k (X-1 + k - kX)^2 
+\end{eqnarray}
+A similar story will be for $p(x | \omega_2)$.  A plot from Mathematica (nearly the same as Stork's paper), shows very different discrimination functions for the MLE derived version and what would be determined for the actual distribution.  
+
+
+\section{Problem 15}
+
+\bibliography{../patternNotes.bib}
+\bibliographystyle{abbrv}
+
+\end{document}  

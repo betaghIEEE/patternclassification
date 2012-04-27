@@ -1,0 +1,202 @@
+
+
+
+Topics in the slides:
+\begin{quote}
+	\begin{itemize}
+		\item Bayesian Estimation (BE)
+		\begin{itemize}
+				\item Bayesian Parameter Estimation: Gaussian Case
+				\item Bayesian  Parameter Estimation: General Estimation 
+		\end{itemize}
+		\item Problems of Dimensionality 
+		\item Computational Complexity 
+		\item Component Analysis and Discriminants
+		\item Hidden Markov Models
+	\end{itemize}
+	
+\end{quote}
+
+
+\begin{itemize}
+	\item Bayesian Estimation (Bayesian Learning to pattern classification problems)
+	\begin{itemize}
+		\item In MLE, $\theta$ was supposed fixed
+		\item In $\theta$ is a random variable
+		\item The computation of posterior probabilities $P(\omega_i | x)$ lies at the heart of Bayesian classification.
+		\item Goal: compute $P(\omega_i | x | D)$ given the sample $D$, Bayes formula can be written \cite[91]{posteriorProbabilities}
+		\begin{equation}
+			P(\omega_i | \vec{x} , D) = \frac{P ( \vec{x}| \omega_i, D  ) P(\omega_i | D)} {\sum_{i=1}^c (P(\vec{x}| \omega_j, D) P(\omega_j |D)  ) }
+		\end{equation}
+		To demonstrate the preceding equation, use:
+		\begin{eqnarray}
+			P(\vec{x}, D | \omega_i) = P(\vec{x} | D\omega_i) \\
+			P( \vec{x} |D ) = \sum_j P(\vec{x}, \omega_j | D) \\
+			P(\omega_i) = P(\omega_i | D) \label{trainingSampleBayes}
+		\end{eqnarray}
+		Equation \ref{trainingSampleBayes} comes from the training sample.  The derivation leads to 
+		\begin{equation}
+			P(\omega_i | \vec{x}, D) = \frac{P ( \vec{x} | \omega_i , D_i) P(\omega_i) } {\sum_{j=1}^c P(\vec{x} | \omega_j , D) P(\omega_j)}
+		\end{equation}
+		
+	\end{itemize}
+	\item $p(\vec{x})$ may be unknown, but one assumption claims its form is parametric.  In the parametric form, it can be said that  $p(\vec{x}| \theta)$ is known.   Preferably, the goal includes acquiring the probability density function in Gaussian cases.  Using the joint density to obtain $p(\vec{x} | D)$: 
+	\begin{eqnarray}
+		p( \vec{x} | D) = \int p( \vec{x} , \vec{\theta} | D ) d \vec{\theta} \\
+		= \int p( \vec{x} | \theta) p( \vec{\theta} | D) d \vec{\theta}
+	\end{eqnarray}
+	\item How does this procedure provide a method to approximate the parameters $\vec{\theta}$? \cite[92]{duda-hart-stork}
+\end{itemize}
+
+
+\subsection{Bayesian Parameter Estimation: Gaussian Case}
+\textbf{Goal:} Estimate $\theta$ using the a-posteriori density $P(\theta | D)$. 
+
+\begin{itemize}
+	\item Univariate case: $P(\mu | D)$, $\mu$ is the only unknown parameter 
+	\begin{eqnarray}
+		P( x | \mu) ~ N( \mu , \sigma^2) \\
+		P(\mu) ~ N( \mu_0 , \sigma_0^2 ) \\
+		P(\mu | D) = \frac{P( D| \mu) P(\mu)}  {\int P(D | \mu) P(\mu) d\mu} \label{bayesNSamplesUnivariate}  \\
+		= \alpha \prod _{k=1} ^n P( x_k | \mu) P(\mu) \\
+	\end{eqnarray}
+	The reproducing density is defined: 
+	\begin{equation}
+		P( \mu | D ) ~ N( \mu_n , \sigma_n ^2) \label{reproducingDensityUnivariate}
+	\end{equation}
+	Identifying equation \ref{bayesNSamplesUnivariate} and \ref{reproducingDensityUnivariate} yields:
+	\begin{eqnarray}
+		\mu _n = ( \frac{n \sigma_0^2}  {n_0 \sigma_0 ^2 + \sigma^2}  ) \hat{\mu}_n + (\frac{\sigma^2} {n \sigma_0 ^2 + \sigma^2}) \mu_0  \\
+		\sigma_n ^2 = \frac{\sigma_0 ^2 \sigma^2} {n \sigma_0 ^2 + \sigma^2}
+	\end{eqnarray}
+	% cite figure 3.2
+	\item The univariate case $P(x | D)$
+	\begin{itemize}
+		\item $P( \mu | D)$ computed 
+		\item $P(x | D)$ remains to be computed!  
+		\begin{equation}
+			P(x | D) = \int P(x | \mu) = \int P(x | \mu) P( \mu | D) d\mu \label{univariateEvidence}
+		\end{equation}
+		Equation \ref{univariateEvidence} is Gaussian.   I provides: $P(x |D) ~ N(\mu_n , \sigma^2 + \sigma_n ^2)$ which is the desired class-conditional density $P(x|D_j , \omega_j)$.  Therefore: $P(x | D_j , \omega_j)$ together with $P(\omega_j)$ and using Bayes formula, we obtain the Bayesian classification rule: 
+		\begin{equation}
+			\max _{\omega_j} [P(\omega_j | x , D)] = \max _{\omega_j}  P(x | \omega_j , D_j) P(\omega_j)
+		\end{equation}
+		
+	\end{itemize}
+\end{itemize}
+
+
+\section{Bayesian Parameter Estimation: General Theory}
+
+\begin{itemize}
+	\item $P(x | D)$ computation can be applied to any situation in which the unknown density can be parameterized:  the basic assumption are: 
+	\begin{itemize}
+		\item The form of $P(x | \omega)$ is assumed known, but the value of $\theta$ is not known exactly 
+		\item Our knowledge about $\theta$ is assumed to be contained in a known prior density $P(\theta)$.
+		\item The rest of our knowledge $\theta$ is contained in a set $D$ of $n$ random variable $x_1, x_2,..., x_n$ that follows $P(x)$.
+	\end{itemize}
+\end{itemize}
+
+The basic problem is: ``Compute the posterior density $P(\theta | D)$'' then ``Derive $P(x | D)$''
+Using Bayes Formula, we have 
+\begin{equation}
+	P( \theta | D) = \frac{ P(D | \theta) P(\theta) } { \int P(D | \theta ) P( \theta) d \theta  }
+\end{equation}
+And by independence assumption
+\begin{equation}
+	P( D | \theta) = \prod _{k=1} ^n P( x_k | \theta)
+\end{equation}
+
+\section{Problems of Dimensionality} % reference Chapter 3 section 7
+\cite[11]{slidesChapter3Part2}
+\begin{itemize}
+	\item  Problems involving 50 or 100 features (binary valued)
+	\begin{itemize}
+		\item Classification accuracy depends upon the dimensionality and the amount of training data
+		\item Case of two classes multivariate normal with same covariance
+		\begin{eqnarray}
+		P(\textrm{error}) \frac{1}{\sqrt{2\pi}} \int _{r/2}^{\infty} e^{\frac{u}{2}} du \\
+		r^2 = (\mu _1 - \mu_2)^T \Sigma^{-1} (\mu _1 - \mu_2) \\
+		\lim _{r \to \infty} P(error) = 0 
+		\end{eqnarray}
+	\end{itemize}
+	\item If features are independent then:  
+	\begin{eqnarray}
+		\Sigma = \diag ( \sigma_1 ^2, \sigma_2^2 , ..., \sigma_d ^2) \\
+		r^2 = \sum _{i=1}^d (\frac{\mu _{i1} - \mu_{i2}}{\sigma_i})^2
+	\end{eqnarray}
+	\item Most useful features are the ones for which the difference between the means is large relative to the standard deviation.
+	\item It has frequently been observed in practice that, beyond a certain point, the inclusion of additional features leads to worse rather than better performance:  \textbf{we have the wrong model!}
+	
+\end{itemize}
+
+\section{Computational Complexity}
+
+\begin{itemize}
+	\item Our design methodology is affected by the computational difficulty : 
+	\begin{itemize}
+		\item ``big-oh'' notation (order of)
+	\end{itemize}
+	
+\end{itemize}
+
+\subsection{Complexity of the ML Estimation}
+\begin{itemize}
+	\item Gaussian priors in $d$ dimensions classifier with $n$ training samples for each of $c$ classes 
+	\item For each category, we have to compute the discriminant function:
+	\begin{equation}
+		g(x) = - \frac{1}{2} ( \vec{x} - \mu) ^T  \Sigma^{-1} ( \vec{x} - \mu) - \frac{d}{2}\ln {2\pi} - \frac{1}{2} \ln|\hat{\Sigma} | + \ln P(\omega)
+	\end{equation}
+	\begin{itemize}
+		\item $O(d n)$ for $\hat{\mu}$ 
+		\item $O(n d^2)$ for computing $\Sigma ^{-1}$ 
+		\item $O(nd^2)$ for computing the determinant of $\Sigma$
+		\item $O(n)$ for computing the prior probabilities
+		\item Constant complexity for computing the constants.
+		\item $O(n d^2)$ tends to dominate the compute cycles 
+	\end{itemize}
+	
+	
+\end{itemize}
+
+
+\section{Component Analysis and Discriminants}
+\begin{itemize}
+	\item Combine features in order to reduce the dimension of the feature space
+	\item Linear combinations are simple to compute and tractable 
+	\item Project high dimensional onto a lower dimensional space
+	\item Two classical approaches for finding ``optimal'' linear transformation
+	\begin{itemize}
+		\item Principal Component Analysis ``Projection that best \textbf{represents} the data in a least-square sense.'' 
+		\item Multiple Discriminant Analysis ``Projection that bests \textbf{separates} the data in a least squares sense''
+	\end{itemize}
+	
+\end{itemize}
+
+\section{Hidden Markov Models}
+
+\begin{itemize}
+	\item Markov Chains
+	\item Goal: make a sequence of decisions
+	\begin{itemize}
+		\item Processes that unfold in time, states at time $t$ are influence by a state at $t-1$
+		\item Applications: speech recognition, gesture recognition, parts of speech tagging and DNA sequencing, 
+		\item Any temporal process without memory $\omega ^T \{ \omega(1),\omega(2), ..., \omega(T) \}$ sequence of states.  We might have $\omega^6 = \{ \omega 1, \omega 4, \omega 2, \omega 2, \omega 1, \omega 4  \}$.
+		\item The system can revisit a state at different steps and not every state need to be visited 
+	\end{itemize}
+	\item First Order Markov models
+	\begin{itemize}
+		\item Our productions of any sequence is described by the transition probabilities. 
+		\begin{eqnarray}
+			P( \omega_j (t+1) | \omega_i (t)) = a_{ij} \\
+			\theta = ( a_ {ij} , \omega^T) \\
+			P(\omega^T | \theta) = a_{14} a_{42} a_{22} a_{21} a_{14} P(\omega(1) = \omega_i)
+		\end{eqnarray}
+		% cite figure 3-8
+		\item Examples include speech recognition
+		``production of spoken words''  Production of the word: ``pattern'' represented by phonemes.
+		Transitions from p to a, a to tt, tt to er, and er to n to silent state.  
+	\end{itemize}
+	
+\end{itemize}
+

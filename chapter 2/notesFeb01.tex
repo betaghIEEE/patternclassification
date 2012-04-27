@@ -1,0 +1,32 @@
+Therefore, we have to use the given samples to estimate the unknown functions in the $g_i(x)$ namely the prior probility $p(\omega_i)$, and the class-conditional probability  
+
+We also assume that the samples in $D_j$ are independent and identically distributed (iid) random variables following the probability density function $p(x | \omega_2)$ having a parametric form $\theta_j$
+
+The log likelyhood (Chapter 3)
+
+
+The d-dimensional multivariate normal density is given by 
+\begin{equation}
+	p(x | \mu , \Sigma) = \frac{1}{2\pi ^{d/2} |\Sigma| ^2}
+\end{equation}
+
+Let us choose $x_1, ..., x_n$ as independent observation from $p(x | \mu, \Sigma)$.  The joint density function is given by $p(x_1, x_2, ..., x_n | \mu, \Sigma)$ 
+
+\begin{equation}
+	\equiv \frac{1}{(2\pi)^{d/2} |\Sigma|^{d/2}}exp [\\frac{-1}{2} \Sum _{k=1}{n} (x_k - \mu)^T \Sigma^{-1}(x_k - \mu)]
+\end{equation}
+
+The log likelyhood function of $\mu$ and $\Sigma$ is 
+\begin{eqnarray}
+ l (\mu, \Sigma) = \frac{n}{2t} ln (2 \pi) - \frac{n}{2}ln |\Sigma| \\
+= \frac{1}{2} \Sum _{k=1} (x_k - \mu)^T \Sigma^{-1}(x_k - \mu) \\
+{dl(\mu, \Sigma)} {d\mu} = \frac{1}{2} [ -1 2 \Sigma ^{-1} \Sum _{k=1} ^n (x_k + n 2 \Sigma^{-1} \mu)] \\
+= 0 \\
+\Sigma^{-1} \Sum_{k=1}^n x_k = n \Sigma^{-1} n\\
+\Sigma ^{-1} = A \\
+\frac{dl (\mu, \Sigma)}{A} = \frac{n}{2} A^{-1} - \frac{1}{2} \Sigma _{k=1}^n (x_k - \mu)(x_k - \mu)^T = 0 \\
+\Leftarrow \frac{n}{2} \hat {\Sigma} = \frac{1}{2} \Sum _{k=1}{n} (x_k - \mu)(x_k - \mu)^T \\
+\hat {\Sigma} = \frac{1}{n} \Sum_{k=1}{n} (x_k - \hat{\mu})(x_k - \hat{\mu})^T
+\end{eqnarray}
+
+
