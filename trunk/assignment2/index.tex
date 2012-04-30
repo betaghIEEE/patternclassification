@@ -71,7 +71,7 @@
 \section{Introduction}
 The original assignment is 
 \begin{quote}
-	This project is to illustrate how a modified Independent Component Analysis (ICA) can be used to restore an image corrupted with additive Gaussian noise.  
+	This project is to illustrate how a modified Independent Component Analysis (ICA) can be used to restore an image corrupted with additive Gaussian noise.    
 
 	Choose any natural image (of a reasonable size), add 30\% Gaussian noise to the image, assuming a noisy image model:
 	\begin{equation}
@@ -80,12 +80,14 @@ The original assignment is
 	%where include picture  \\
 %	``http://www.cis.hut.fi/aapo/papers/IJCN99\_tutorial/img163.gif'', mergeFormatInet is Gaussian, and include picture \\ ``http://www.cis.hut.fi/aapo/papers/IJCNN99\_tutorialweb/img8.gif'' where mergeFormatInet is non-Gaussian.  
 	
-	Denoise the noisy image by using the Sparse Code Shrinkage Method (closely related to ICA) as described in the following in the following reference. 
+	Denoise the noisy image by using the Sparse Code Shrinkage Method (closely related to ICA) as described in the following in the following reference \cite{hyvarinen99sparse}. 
 	
 	Compare the restored image using the above method with standard noise removal filters such the simple median filter or the Wiener filter. 
 	
 	MATLAB codes for various versions of ICA are available from the home page of A Hyv$\ddot{a}$rien and the Laboratory of Computer and Information Science at the University of Helsinki. 
 \end{quote}
+
+Note that an Objective-C alternative is authorized in the absence of MATLAB. 
 
 The best examples of MATLAB for this exercise is found in \cite[159-162]{stone-ica-tutorial}.  The versions of ICA included are gradient ascent, and projection pursuit.  %Descriptions of the ICA algorithm are best described in \cite{appo-ica-book} from chapter 7 to the end.   
 ICA procedures determine both the mixing matrix and independent components from source data as shown in equation \ref{standardICA}.  
