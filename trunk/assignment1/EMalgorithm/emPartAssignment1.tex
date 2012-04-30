@@ -1,0 +1,213 @@
+%
+%  emPartAssignment1
+%
+%  Created by Daniel Beatty on 2012-04-28.
+%  Copyright (c) 2012 . All rights reserved.
+%
+\documentclass[]{article}
+
+% Use utf-8 encoding for foreign characters
+\usepackage[utf8]{inputenc}
+
+% Setup for fullpage use
+\usepackage{fullpage}
+
+% Uncomment some of the following if you use the features
+%
+% Running Headers and footers
+%\usepackage{fancyhdr}
+
+% Multipart figures
+%\usepackage{subfigure}
+
+% More symbols
+%\usepackage{amsmath}
+%\usepackage{amssymb}
+%\usepackage{latexsym}
+
+% Surround parts of graphics with box
+\usepackage{boxedminipage}
+\usepackage{doublespace}
+
+% Package for including code in the document
+\usepackage{listings}
+
+% If you want to generate a toc for each chapter (use with book)
+\usepackage{minitoc}
+
+% This is now the recommended way for checking for PDFLaTeX:
+\usepackage{ifpdf}
+
+%\newif\ifpdf
+%\ifx\pdfoutput\undefined
+%\pdffalse % we are not running PDFLaTeX
+%\else
+%\pdfoutput=1 % we are running PDFLaTeX
+%\pdftrue
+%\fi
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\title{An Examination of the Expected Maximization Algorithm Over an Eye}
+\author{  }
+
+\date{2012-04-28}
+
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\maketitle
+
+
+\begin{abstract}
+\end{abstract}
+
+\section{Specification and Organization} % (fold)
+\label{sec:specification}
+For the exercise reported here, there is a digital picture of a human retina as shown in figure \ref{}.  The objective of the work is to 
+\begin{enumerate}
+	\item Take the gradient of the monochrome image
+	\item Use the Expected-Maximization algorithm to extract the edge points from the blurred optical disc boundary.
+\end{enumerate}
+
+%You are given a retinal digital picture in color.  Take the gradient of the monochrome image and use the Expectation-Maximization (EM) algorithm to extract the edge points from the blurred optic disc boundary.
+
+% section specification (end)
+
+\section{Background} % (fold)
+\label{sec:background}
+
+\subsection{Origins of Expected Maximization} % (fold)
+\label{sub:origins_of_expected_maximization}
+The expected maximization algorithm is credited as first published in \cite{Dempster77maximumlikelihood}.  Various explanations have appeared in publications like \cite{duda-hart-stork,Moon96theexpectation-maximization, Joo_expectationmaximization}.    %In \cite{yamazaki98introduction}, a Gaussian approach is applied to detecting the edges from the classic peppers image.  
+
+EM extends properties of Maximum Likelihood Estimation (MLE) methods by determining via iterative convergence.  %This  based on observations from an incomplete set.  %of what most of the publication the governing parameters of a particular data-set.   
+%In particular,  uncorrupted cases may use sufficient statistics acquired via MLE  \cite{duda-hart-stork}.
+\cite{Dempster77maximumlikelihood} showed that algorithm is applied effectively to two datasets.  One data set is observed and the other dataset is realized from the observed dataset.  This application implies that there is a mapping between the two datasets.   The dataset realized from the observed data set is considered a complete dataset.  
+
+In general, the equation for the terminating condition of the EM algorithm \cite{duda-hart-stork} is stated in equation \ref{em_basis}.  
+\begin{equation}
+\vec{\Theta}^* = \arg \max_{\Theta} \sum_{\vec{x}\in \mathcal{X}^n} E[ \ln p( \vec{x} | \vec{\theta} ,\vec{y}) ] \label{em_basis}
+\end{equation}
+The meaning of the terms in equation \ref{em_basis} are as follows:
+%Also stated in most text, the general equation for the EM algorithm is defined in equation \ref{em_basis} where
+\begin{itemize}
+\item  $\mathbf{X}$ is the true data set, $\vec{x}$ is the true data set sample, 
+ \item $\vec{\Theta}$ is the set of parameters for the statistic, and 
+ \item $\vec{y}$ is the data sample in the given data set.
+ \end{itemize}
+
+Equation \ref{em_basis} allows a characteristic to be derived in equation \ref{duda-hart-stork-EM} that identifies a convergence point, $Q( \vec{\theta} ; \vec{\theta}^i)$ for the parameters identified by $\vec{\theta}$ and $\vec{\Theta}$,.
+\begin{equation}
+Q( \vec{\theta} ; \vec{\theta}^i) = E_{D_b} [ \ln p(D_g, D_b; \vec{\theta}) | D_g ; \vec{\theta}^i ] \label{duda-hart-stork-EM}
+\end{equation}
+where :
+\begin{itemize}
+	\item $\vec{\theta}^i$ is the current (best) estimate for the full distribution.  
+	\item $\vec{\theta}$ is a candidate vector for an improved estimate.
+	\item $Q(\vec{\theta} ; \theta^i)$ is a function of $\vec{\theta}$ and $\vec{\theta}^i$.
+	\item $D_b$ is the actual data set.  
+	\item $D_g$ is the unknown and uncorrupted data set.
+	\item $E_{D_b} [ \ln p(D_g, D_b; \vec{\theta}) | D_g ; \vec{\theta}^i ] $ is the expected value over the missing features.  The expected value hinges on $\vec{\theta}^i$ which are the estimated true parameters.
+\end{itemize}
+
+ In \cite{yamazaki98introduction}, the complete dataset is assumed to be a collection of Gaussian datasets.   A Gaussian dataset is defined by its mean and variance (or its multivariate equivalent.)  
+
+In the Gaussian case, each class has a proportion that defines how much each class contributes as determined by their mean and covariance (denoted $\alpha, \vec{\mu}, \mathbf{\Sigma}$ respectively).   If one acquires a sample as an initial set, %the question
+ is there an EM algorithm that will refine these sufficient statistics?   %One paper by Frank Dellaert shows an example of yes.  The Q function is presented as a matrix, which must be reduced to a form that allows the less than operator to be valid.  
+In \cite{yamazaki98introduction}, there is an example using a matrix as the result of the expectation step.  From this expectation, the sufficient statistics for the next step are %is
+ computed.   When an expected equation forms a matrix $\mathbf{A}$, as in equation %The expected equation is as in equation 
+\ref{expectedMatrix}, it is called an expected matrix.
+%forms a matrix $\mathbf{A}$ called the expected matrix.
+\begin{equation}
+a_{ij}^{(k)}     = \frac {\alpha_j p(\vec{y}_i  ^{(k)}  | \vec{\mu_j} ^{(k)} , \Sigma_j ^{(k)}  )}{\sum_{j=1}^M \alpha_j p(\vec{y}_i  ^{(k)}  | \vec{\mu_j} ^{(k)} , \Sigma_j ^{(k)}  )} \label{expectedMatrix}
+\end{equation}
+
+
+The three sufficient statistics are computed in the maximization step.   They are computed by the following equations.
+\begin{eqnarray}
+\vec{\mu} _j ^{(k+1)} = \frac{\sum_{i=1} ^N a_{ij}^{(p)} \vec{y}_i} {\sum_{i=1}^N a_{ij} } \\
+\mathbf{\Sigma} _j ^{(k+1)} = \frac {\sum_{i=1}^N (\vec{y}_i \vec{\mu}_j ^{(p)} )^T(\vec{y}_i \vec{\mu}_j ^{(p)} ) } {\sum_{i=1}^N a^{(k)}_{ij}}  \\
+\alpha _j ^ {(k+1)} = \frac{1}{N} \sum_{i=1}^N a^{(k)}_{ij}
+\end{eqnarray}
+
+
+
+The obvious question is, what reduction on $\mathbf{A}$ is used to assess the convergence of the estimations?  %In this case, the determinant is used since it is always positive.    Another question is where is the proof that $|\mathbf{A}|$ is monotonic, in each iteration.   
+The following equation answers this question:
+\begin{equation}
+Q ( \theta ^* ; \theta ) =\log (\prod_{i=1} ^N  a_{ii} )
+\end{equation}
+
+
+%In another observation, %it is clear that 
+Also, the initial guess for $\mathbf{A}$ can not be the zero matrix.  As such, the sufficient statistics would be rendered zero, and no convergence would occur.   Typically, the guesses are for $\mu$ to be scattered for each class and for the expected matrix to be 
+\[ 
+\mathbf{A} = \frac{1}{N} \mathbf{I}.
+\]
+
+% subsection origins_of_expected_maximization (end)
+
+\subsection{Demonstrations of the Expected Maximization Algorithm} % (fold)
+\label{sub:demonstrations_of_the_expected_maximization_algorithm}
+
+% subsection demonstrations_of_the_expected_maximization_algorithm (end)
+
+% section background (end)
+
+\section{Approach} % (fold)
+\label{sec:approach}
+
+\subsection{Univariate} % (fold)
+\label{sub:univariate}
+
+% subsection univariate (end)
+
+\subsection{Multivariate} % (fold)
+\label{sub:multivariate}
+
+% subsection multivariate (end)
+
+\subsection{Image Arrangement} % (fold)
+\label{sub:image_arrangement}
+
+% subsection image_arrangement (end)
+
+% section approach (end)
+
+\section{Results} % (fold)
+\label{sec:results}
+
+\subsection{Expected Maximization Images} % (fold)
+\label{sub:expected_maximization_images}
+
+% subsection expected_maximization_images (end)
+
+\subsection{Distinguishing the Eye} % (fold)
+\label{sub:distinguishing_the_eye}
+
+% subsection distinguishing_the_eye (end)
+
+\subsection{Performance Under the CPU} % (fold)
+\label{sub:performance_under_the_cpu}
+
+% subsection performance_under_the_cpu (end)
+
+\subsection{Performance Under the Graphics Processing Unit} % (fold)
+\label{sub:performance_under_the_graphics_processing_unit}
+
+% subsection performance_under_the_graphics_processing_unit (end)
+
+% section results (end)
+
+\bibliographystyle{unsrt}
+\bibliography{../../patternNotes.bib}
+\end{document}
