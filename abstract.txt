@@ -1,8 +1,0 @@
-Simple Kernel and Non-Kernel Methods of Segmenting the Sky
-Image processing tools and libraries have been written to analyze images for the properties of objects within.  Many image processing tools require human intervention to interpret them, and have no preview capability.  Progress made in a course for pattern recognition has revealed a basic methodology for simple classification of images.  
-
-One application of these techniques are FITS images as recorded in the Data Release 1 of the Sloan Digital Sky Survey housed at Texas Tech University.  A set of Web Objects applications and services provide means of mapping images to their sky coordinates.   
-
-The DCG FITS Services provide a bridge between the FITS images to Core Image.  The services further provide meta-data information for analysis and use image reproduction.  Next, these non-kernel and kernel methods provide basic image segmentation and de-noising.  Lastly, a Cocoa interface is supplied to simplify to road from desired analysis to discovery.  All of this just to examine basic principles of pattern recognition on images and the sky.
-
-Construction of these frameworks use both non Core Image kernels and some preliminary work Core Image kernels for basic image segmentation. 

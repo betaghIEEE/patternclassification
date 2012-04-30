@@ -1,18 +1,191 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>An ICA experiment using DCG Renaissance.</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/mn.html)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/mn.html)"> 
+<!-- html --> 
+<meta name="src" content="index.tex"> 
+<meta name="date" content="2007-05-10 21:26:00"> 
+<link rel="stylesheet" type="text/css" href="index.css"> 
+</head><body 
+>
+  <div class="maketitle">
 
-<html lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>index</title>
-	<meta name="generator" content="TextMate http://macromates.com/">
-	<meta name="author" content="">
-	<!-- Date: 2007-05-10 -->
-</head>
-<body>
 
-	 <a href="assignment1/" target="_blank">Assignment One</a> /br
-	
-	 <a href="assignment2/" target="_blank">Assignment Two</a> /br
-	
-</body>
-</html>
+<h2 class="titleHead">An ICA experiment using DCG Renaissance.</h2>
+<div class="author" > <span 
+class="cmr-12">Daniel Beatty </span></div>
+<br>
+<div class="date" ><span 
+class="cmr-12">2007-05-10</span></div>
+  </div>
+  <table width="100%" 
+class="abstract"><tr><td 
+>
+  <h3 class="likesectionHead"><a 
+ id="x1-1000"></a>Abstract</h3>
+  </td></tr></table>
+<!--l. 72--><p class="noindent"><span 
+class="cmbx-12x-x-120">1</span>
+  <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-20001"></a>Introduction</h3>
+<!--l. 73--><p class="noindent">The original assignment is
+    <div class="quote">
+    <!--l. 75--><p class="noindent">This project is to illustrate how a modified
+    Independent  Component  Analysis  (ICA)
+    can be used to restore an image corrupted
+    with additive Gaussian noise.
+    <!--l. 77--><p class="noindent">Choose any natural image (of a reasonable
+    size), add 30% Gaussian noise to the image,
+    assuming a noisy image model:
+    <table width="100%" 
+class="equation"><tr><td><a 
+ id="x1-2001r1"></a>
+    <center class="math-display" >
+    <img 
+src="index0x.png" alt="&#x20D7;z = &#x20D7;x+ &#x20D7;n
+    " class="math-display" ></center></td><td width="5%">(1)</td></tr></table>                                           <!--l. 80--><p class="nopar">
+                                                  <!--l. 84--><p class="noindent">Denoise the noisy image by using the Sparse
+                                                  Code Shrinkage Method (closely related to
+                                                  ICA) as described in the following in the
+                                                  following reference.
+                                                  <!--l. 86--><p class="noindent">Compare the restored image using the above
+                                                  method with standard noise removal filters
+                                                  such the simple median filter or the Wiener
+                                                  filter.
+                                                  <!--l. 88--><p class="noindent">MATLAB codes for various versions of
+                                                  ICA are available from the home page of A
+                                                  Hyv<span 
+class="cmmi-10">ä</span>rien and the Laboratory of Computer and
+                                                  Information Science at the University of
+                                                  Helsinki.</div>
+                                              <!--l. 91--><p class="indent">   In the absence of MATLAB, this paper is resorting
+                                              to using the implementation of the Fast ICA as
+                                              implemented in the IT++ libraries provided free of
+                                              charge under the GNU Public License. Furthermore, this
+                                              experiment uses a wrapper framework to IT++ called
+                                              Cocoa IT build especially for this project.
+                                              <!--l. 93--><p class="indent">   The key to Sparse Code Shrinkage using ICA is in the
+                                              summary provided in section 4 <span class="cite">[<span 
+class="cmbx-10">?</span>, 4]</span>
+                                                  <div class="quote">
+                                                  <!--l. 95--><p class="noindent">
+                                                  <ol  class="enumerate1" >
+                                                  <li class="enumerate" value="1" 
+><a 
+ id="x1-2003x1"></a>First,  using  a  noise-free  training  set
+                                                  of <img 
+src="index1x.png" alt="&#x20D7;x"  class="vec" >, use some sparse coding method
+                                                  for determining the orthogonal matrix
+                                                  <span 
+class="cmbx-10">W</span> so that the components <span 
+class="cmmi-10">s</span><sub><span 
+class="cmmi-7">i</span></sub> in <img 
+src="index2x.png" alt="&#x20D7;s"  class="vec" > =
+                                                  <span 
+class="cmbx-10">W</span><img 
+src="index3x.png" alt="&#x20D7;x"  class="vec" >  have  as  sparse  distributions  as
+                                                  possible.  Estimate  a  density  model
+
+    <span 
+class="cmmi-10">p</span><sub><span 
+class="cmmi-7">i</span></sub>(<span 
+class="cmmi-10">s</span><sub><span 
+class="cmmi-7">i</span></sub>) for each sparse component, using
+    the models in <a 
+href="#x1-2008r3">3<!--tex4ht:ref: exponent --></a> and <a 
+href="#x1-2008r5">5<!--tex4ht:ref: Laplace --></a>.
+    </li>
+    <li class="enumerate" value="2" 
+><a 
+ id="x1-2005x2"></a>Compute  for  each  noisy  observation
+    <img 
+src="index4x.png" alt="&#x02DC;x"  class="tilde" >(<span 
+class="cmmi-10">t</span>)
+    of  <span 
+class="cmbx-10">x  </span>the  corresponding  noisy  sparse
+    components <span 
+class="cmbx-10">y</span>(<span 
+class="cmmi-10">t</span>) = <span 
+class="cmbx-10">W</span><img 
+src="index5x.png" alt="&#x02DC;x"  class="tilde" >(<span 
+class="cmmi-10">t</span>). Apply the
+    shrinkage non-linearity <span 
+class="cmmi-10">g</span><sub><span 
+class="cmmi-7">i</span></sub>(<span 
+class="cmsy-10">&#x22C5;</span>) as defined
+    in <a 
+href="#x1-2008r4">4<!--tex4ht:ref: shrinkageGauss --></a>, or in <a 
+href="#x1-2008r7">7<!--tex4ht:ref: shrinkageLaplace --></a>, on each component <span 
+class="cmmi-10">y</span><sub><span 
+class="cmmi-7">i</span></sub>(<span 
+class="cmmi-10">t</span>),
+    for every observation index <span 
+class="cmmi-10">t</span>. Denote
+    the  obtained  components  by  <span 
+class="cmmi-10">&#x015D;</span><sub><span 
+class="cmmi-7">i</span></sub>(<span 
+class="cmmi-10">t</span>)  =
+    <span 
+class="cmmi-10">g</span><sub><span 
+class="cmmi-7">i</span></sub>(<span 
+class="cmmi-10">y</span><sub><span 
+class="cmmi-7">i</span></sub>(<span 
+class="cmmi-10">t</span>)).
+    </li>
+    <li class="enumerate" value="3" 
+><a 
+ id="x1-2007x3"></a>Invert   the   relation   <a 
+href="#x1-2008r2">2<!--tex4ht:ref: simpleICA --></a>   to   obtain
+    estimates of the noise-free <span 
+class="cmbx-10">x</span>, given by
+    <img 
+src="index6x.png" alt="&#x02C6;x"  class="circ" >(<span 
+class="cmmi-10">t</span>) = <span 
+class="cmbx-10">W</span><sup><span 
+class="cmmi-7">T</span></sup><img 
+src="index7x.png" alt="&#x02C6;s"  class="circ" > (<span 
+class="cmmi-10">t</span>).</li></ol>
+    <!--l. 101--><p class="noindent">The equations referenced are supplied below:
+    <div class="eqnarray">
+    <center class="math-display" >
+    <img 
+src="index8x.png" alt="                                  s = Wx  (2)
+                                2
+                 p(s) = C exp(- as &#x2215;2- b[s]) (3)
+       g(u) = --1---sign(u)max(0, &#x2223;u&#x2223;- b&#x03C3;2) (4)
+              1+ &#x03C3;2a
+          p(s) =-1(&#x03B1;&#x2218;-+-2)[&#x03B1;(&#x03B1;-+-1)&#x2215;2](&#x03B1;&#x2215;2+1) (5)
+                2d [ &#x03B1;(&#x03B1; + 1)&#x2215;2 + &#x2223;s&#x2215;d&#x2223;]&#x03B1;+3
+       &#x2223;u&#x2223;- ad   1&#x2218; ---------------------
+g1(u) = (--2--- + 2  (&#x2223;u&#x2223;+ ad)2 - 4&#x03C3;2(&#x03B1;+ 3)) (6)
+                         (             )
+               g(u) = max   0             (7)
+                            sign(u)g1(u)
+    " class="math-display" ><a 
+ id="x1-2008r2"></a><a 
+ id="x1-2008r3"></a><a 
+ id="x1-2008r4"></a><a 
+ id="x1-2008r5"></a><a 
+ id="x1-2008r7"></a></center>
+    </div>
+    </div>
+<!--l. 122--><p class="indent">  An experiment to demonstrate these equations simply
+takes an image, generates the <span 
+class="cmbx-10">W </span>matrix. feeds in a noisy
+version of the same image into <span 
+class="cmmi-10">g</span><sub><span 
+class="cmmi-7">i</span></sub>. This is done following
+the tutorials for Octave.
+<!--l. 124--><p class="indent">  This same experiment is also done using Cocoa.
+Admittedly, this implementation is far easier than the
+one for PCA. One, no points of interest are being    considered. Thus the GUI for this exercise is much
+                                              simpler. Also, Core Image filters can be directly
+                                              applied.
+                                                 
+</body></html> 
+
+
+
